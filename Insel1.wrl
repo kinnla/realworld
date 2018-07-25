@@ -1,0 +1,1744 @@
+#VRML V2.0 utf8
+
+
+
+
+
+############################ INSEL 1 #########################################
+
+Transform {	   ## Insel 1 ##
+
+	children [
+
+	WorldInfo {
+	  title	"Real World"
+	  info ["(C) Till Zoppke, Robert Becker" "mein.zuhause@gmx.de"]
+	}
+
+
+	DEF Info NavigationInfo {
+	  avatarSize 1.8
+	  headlight FALSE
+	  type "WALK"
+	  speed	0.2
+	  visibilityLimit 20
+
+	}
+
+  
+	DirectionalLight {
+		color 0.4 0.4 0.4 
+		ambientIntensity -4
+		direction 1 0.5 1
+	}
+
+
+	Group {			# Viewpoints
+		children [
+
+	#		DEF hinten Viewpoint {
+	#			position 5 1.8 -29
+	#			orientation	0 5 0 2.5
+	#			fieldOfView	1.2
+	#			description	"hinten"
+	#		}
+	#		DEF oben Viewpoint {
+	#		  position 0 40 -5
+	#		  orientation 5 0 0 -1.5
+	#		  fieldOfView 1.2   # Weitwinkel
+	#		  description "oben"
+	#		}
+	#
+			DEF vorne Viewpoint {
+				position 5 1.8 14
+				orientation	0 0 0 0
+				fieldOfView	1.2
+				description	"vorne"
+			}
+		]
+	}
+
+
+
+	DEF Foggy Fog	{
+		color 0.2 0.2 0.2
+		fogType	"EXPONENTIAL"
+		visibilityRange	10
+	} 
+
+	Background{
+	  frontUrl "seasky.jpg"
+	  backUrl  "seasky.jpg"
+	  topUrl   "nebula.jpg"
+	  bottomUrl"sea_mirror.gif"
+	  leftUrl  "seasky.jpg"
+	  rightUrl "seasky.jpg"
+	} 
+
+	Transform {		# Welcome
+		translation	5 2 9
+		children [
+			DirectionalLight {
+				color 1 0.4 0.4 
+				ambientIntensity 1
+				direction 1 0.5 1
+			}
+			Shape {
+				appearance Appearance {
+					material DEF Font Material {
+						emissiveColor 1 1 1
+						ambientIntensity 1
+						diffuseColor 1 1 1
+						transparency 1
+					}
+				}
+				geometry Text {
+					string "Welcome to the Real World"
+					fontStyle FontStyle	{
+						size 0.5
+						style "BOLD"
+						family "TYPEWRITER"
+						justify	"MIDDLE"
+						}
+				}
+			
+			}
+
+			DEF	Sensor ProximitySensor	{
+				size 3 3 5
+				center 0 0 3
+			}
+
+
+			DEF FadeTimer TimeSensor
+			{
+			  cycleInterval 8.0
+			  loop FALSE
+			}
+
+
+
+			DEF	Fader ScalarInterpolator	{
+        		key [0, 0.2, 0.8, 1]
+        		keyValue [ 1, 0, 0, 1]
+      		}
+
+
+
+		]
+		ROUTE Sensor.enterTime TO FadeTimer.startTime
+		ROUTE Sensor.exitTime TO FadeTimer.stopTime
+		ROUTE Sensor.isActive TO FadeTimer.enabled
+		ROUTE FadeTimer.fraction_changed TO Fader.set_fraction
+		ROUTE Fader.value_changed TO Font.transparency
+
+	}
+  
+
+
+
+
+	Transform {
+		translation	5 1.8 16
+		children Shape {
+			appearance Appearance {
+				material Material {
+					diffuseColor 1 0 0
+				}
+			}
+			geometry Box {size 1 1 1}
+		}
+	}
+
+
+
+	# Grund und Boden
+	DEF Hauptland Transform {
+	  translation 5 0 -10
+	  children Shape { 
+    	appearance Appearance {
+    	  material Material {
+			  diffuseColor  0.5 0.6 0.2
+			 # emissiveColor	-0.5 -0.5 -0.5
+			 # transparency 0.1
+			 # specularColor	0.3 0.3 0.3
+			 # shininess	-7
+	  
+	  
+		  } 
+    	}
+    	geometry Box {size 23 0.1 43} 
+	  }
+	} 
+
+	# Straße
+
+	DEF Faellt Transform {
+
+		PROTO BAUM [
+	  field SFColor farbe 0.4 0.8 0.3    
+	  field SFVec3f hoehe 1 1 1
+		field SFFloat krone 2  
+	  exposedField SFVec3f translation 0 0 0
+	  exposedField SFRotation rotation 0 0 0 0
+	]
+ 
+	{ # PROTO BAUM
+	Transform {
+    	scale IS hoehe
+    	translation IS translation
+    	children [
+	#		DirectionalLight {
+	#			color 0 0 0
+	#			ambientIntensity 0.5
+	#			direction 0.1 0.1 0.1
+	#		}
+
+			Transform {  # Zylinder
+				translation 0 2.5 0
+				children Shape {
+		    	appearance Appearance {
+			    	material Material {
+            			diffuseColor 0.5 0.4 0.3	
+					  }
+				  }
+        	geometry Cylinder {
+        		radius 0.3
+				height 5
+		    	}
+    		} 	 
+			}
+              
+			Transform {	# Kegel 
+    	  translation 0 6 0
+        	children Shape { 
+        	  appearance Appearance {
+						 material Material {
+            				diffuseColor IS farbe 			
+            	}
+        	  }
+        	  geometry Cone {
+            	bottomRadius IS krone 
+        	  }
+		    	}
+    	  }
+    	]
+	  }
+	}
+
+		children [
+
+
+
+
+		# Haus
+		DEF Haus Transform {
+	  translation 2 0 -25
+	  children [
+  
+    	# 4 Wände
+    	Transform { 
+    	  translation 0 2 0
+    	  children Shape {
+        	appearance Appearance { 
+        	  texture ImageTexture { 
+            	url "ziegel1.jpg"
+            	repeatS FALSE  
+            	repeatT FALSE 
+        	  }        
+        	}     
+        	geometry Box { 
+        	  size 4 4 4 	 
+        	}
+    	  } 
+    	}
+
+    	#  Dach
+    	Transform {
+    	  translation 0 4 0
+    	  children Shape {
+        	appearance Appearance {
+        	  texture ImageTexture { 
+            	url "ziegel-dach.jpg"
+            	repeatS FALSE  
+            	repeatT FALSE 
+        	  }
+        	}
+        	geometry IndexedFaceSet {
+        	  colorPerVertex FALSE
+        	  coord Coordinate {
+            	point [
+		        	  -2,  0, -2 
+            	  2,  0, -2
+            	  -2,  0,  2
+            	  2,  0,  2
+            	  0,  3, -3
+            	]
+        	  }
+        	  coordIndex [	
+            	4, 1, 0, -1,
+            	4, 3, 1, -1,
+            	4, 2, 3, -1,
+            	4, 0, 2, -1,
+        	  ]
+        	}
+    	  }
+    	}
+
+    	# Fenster mit Person 12
+    	Transform {
+    	  translation -0.8 2 2
+    	  children 
+		  [
+		
+	#    	PointLight {
+	#        	color 1 1 1
+	#        	intensity 1
+	#        	ambientIntensity 10
+	#        	location 0 0 -0.2
+	#        	radius 5
+	#        	attenuation 0 1 0
+	#    	}
+			 Transform {
+				  translation 0 0 0
+				  children Shape { 
+        			appearance Appearance {
+        				texture ImageTexture { 
+      	    			url "Person12.jpg"
+      	    			repeatS FALSE  
+      	    			repeatT FALSE 
+        				}
+	    			}
+        			geometry Box {size 1.8 1.8 0.01} 
+    			}
+
+
+
+			}
+    		DEF FensterTouch TouchSensor {}
+	
+			Sound {  
+			   intensity 1
+    		   minBack  1
+    		   minFront 1
+    		   maxBack  10
+    		   maxFront 10
+    		   source DEF Sound AudioClip {
+        		 loop FALSE
+        		 url "aldi.wav"
+    		   }
+    		   spatialize FALSE
+    		}
+
+			]
+			ROUTE FensterTouch.touchTime TO	Sound.startTime
+    	}	 
+
+    	# Tür
+    	Transform {
+    	 translation 1 1.25 2
+    	 children Shape { 
+        	appearance Appearance {
+	    	  material Material {
+				  diffuseColor 1 1 1
+				  transparency 0.5
+			  } 
+        	}
+        	geometry Box {size 1 2.5 0.1} 
+    	  }
+
+    	}
+		Transform	{
+		  translation	0.6 1.25 2
+		  children Shape {
+			  appearance Appearance	{
+				  material Material	{
+					  diffuseColor 1 1 1
+				  }
+			  }
+			  geometry Box {size 0.2 0.1 0.1}
+		  }
+	  }
+
+	  ]
+		}# end of Haus
+
+		#Wald
+		DEF Wald Group {
+	  children [
+
+	DEF Baum BAUM { 
+	  farbe 0.4 0.8 0.3
+	  krone 2 
+	  hoehe 1 1 1
+	  translation 6 0 6
+	  rotation 0 0 0 0
+	}   # end of Baum
+
+
+	BAUM {
+		translation	16.1 0 11
+    	hoehe 1 0.6 0.9
+	}
+
+	BAUM {
+		translation	13 0 10
+	}
+
+	BAUM {
+		translation	10 0 9
+	}
+
+	BAUM {
+		translation	16 0 8.2
+    	hoehe 0.4 0.6 1
+	}
+
+	BAUM {
+		translation	13 0 7
+	}
+
+	#BAUM {
+	#	translation	10 0 6
+	#}
+
+	BAUM {
+		translation	16 0 5.1
+    	hoehe 1 0.7 0.6
+	}
+
+	#BAUM {
+	#	translation	13 0 4
+	#}
+
+	BAUM {
+		translation	11 0 3
+	}
+
+	BAUM {
+		translation	16.2 0 2.1
+    	hoehe 0.3 0.6 0.4
+	}
+
+	#BAUM {
+	#	translation	13 0 1
+	#}
+
+	#BAUM {
+	#	translation	10 0 0
+	#}
+
+	#BAUM {
+	#	translation	10 0 -12
+	#}
+
+	BAUM {
+		translation	13 0 -11
+	}
+
+	BAUM {
+		translation	16.1 0 -9.9
+    	hoehe 0.8 0.7 1
+	}
+
+	BAUM {
+		translation	10 0 -9
+	}
+
+	BAUM {
+		translation	13 0 -8
+	}
+
+	BAUM {
+		translation	16 0 -7.1
+    	hoehe 0.5 0.8 0.7
+	}
+
+	#BAUM {
+	#	translation	10 0 -6
+	#}
+
+	#BAUM {
+	#	translation	13 0 -5
+	#}
+
+	BAUM {
+		translation	16 0 -3.9
+    	hoehe 0.7 1 0.9
+	}
+
+	BAUM {
+		translation	10 0 -3
+	}
+
+	#BAUM {
+	#	translation	13 0 -2
+	#}
+
+	BAUM {
+		translation	16.1 0 -1.1
+    	hoehe 1 0.7 0.7
+	}
+
+	BAUM {
+		translation	10 0 -20
+	}
+
+	BAUM {
+		translation	13 0 -19
+	}
+
+	BAUM {
+		translation	16.1 0 -18.1
+    	hoehe 0.5 0.9 0.6
+	}
+
+	BAUM {
+		translation	10 0 -17
+	}
+
+	BAUM {
+		translation	13 0 -16
+	}
+
+	BAUM {
+		translation	16 0 -15.2
+    	hoehe 0.6 0.7 0.8
+	}
+
+	#BAUM {
+	#	translation	10 0 -14
+	#}
+
+	BAUM {
+		translation	13 0 -13
+	}
+
+	BAUM {
+		translation	16.1 0 -12.1
+    	hoehe 0.5 0.7 0.8
+	}
+
+
+
+
+
+	BAUM {
+		translation	-6.1 0 11
+    	hoehe 1 0.7 1
+	}
+
+	BAUM {
+		translation	-3 0 10
+	}
+
+	BAUM {
+		translation	0 0 9
+	}
+
+	BAUM {
+		translation	-6 0 8.1
+    	hoehe 0.5 0.8 0.9
+	}
+
+	BAUM {
+		translation	-3 0 7
+	}
+
+	BAUM {
+		translation	0 0 6
+	}
+
+	BAUM {
+		translation	-5.9 0 5.2
+    	hoehe 0.8 0.6 0.7
+	}
+
+	BAUM {
+		translation	-3 0 4
+	}
+
+	BAUM {
+		translation	0 0 3
+	}
+
+	BAUM {
+		translation	-6.1 0 2.1
+    	hoehe 0.5 0.7 0.6
+	}
+
+	#BAUM {
+	#	translation	-3 0 1
+	#}
+
+	#BAUM {
+	#	translation	0 0 0
+	#}
+
+	BAUM {
+		translation	0 0 -12
+	}
+
+	BAUM {
+		translation	-3 0 -11
+	}
+
+	BAUM {
+		translation	-6.1 0 -10.3
+    	hoehe 0.9 0.4 0.7
+	}
+
+	#BAUM {
+	#	translation	0 0 -9
+	#}
+
+	#BAUM {
+	#	translation	-3 0 -8
+	#}
+
+	BAUM {
+		translation	-6.2 0 -7.1
+    	hoehe 0.6 0.7 0.8
+	}
+
+	BAUM {
+		translation	0 0 -6
+	}
+
+	#BAUM {
+	#	translation	-3 0 -5
+	#}
+
+	BAUM {
+		translation	-6 0 -4.2
+    	hoehe 0.7 0.8 0.4
+	}
+
+	BAUM {
+		translation	0 0 -3
+	}
+
+	#BAUM {
+	#	translation	-3 0 -2
+	#}
+
+	BAUM {
+		translation	-6.1 0 -1.1
+    	hoehe 1 1 1
+	}
+
+	BAUM {
+		translation	0 0 -20
+	}
+
+	BAUM {
+		translation	-3 0 -19
+	}
+
+	BAUM {
+		translation	-5.9 0 -18.3
+    	hoehe 0.5 0.8 0.4
+	}
+
+	BAUM {
+		translation	0 0 -17
+	}
+
+	BAUM {
+		translation	-3 0 -16
+	}
+
+	BAUM {
+		translation	-6.2 0 -15.2
+    	hoehe 0.1 0.5 0.6
+	}
+
+	BAUM {
+		translation	0 0 -14
+	}
+
+	BAUM {
+		translation	-3 0 -13
+	}
+
+	BAUM {
+		translation	-6.1 0 -12.1
+    	hoehe 0.4 0.4 0.5
+	}
+
+
+
+
+
+	BAUM {
+		translation	7.5 0 11
+	}
+
+	#BAUM {
+	#	translation	4.5 0 10
+	#}
+
+	#BAUM {
+	#	translation	6 0 9
+	#}
+
+	BAUM {
+		translation	3 0 8
+	}
+
+	#BAUM {
+	#	translation	7.5 0 7
+	#}
+
+	BAUM {
+		translation	4.5 0 6
+	}
+
+	BAUM {
+		translation	6 0 5
+	}
+
+	BAUM {
+		translation	3 0 4
+	}
+
+	#BAUM {
+	#	translation	7.5 0 3
+	#}
+
+	BAUM {
+		translation	4.5 0 2
+	}
+
+	BAUM {
+		translation	6 0 1
+	}
+
+	#BAUM {
+	#	translation	3 0 0
+	#}
+
+	BAUM {
+		translation	3 0 -12
+	}
+
+	#BAUM {
+	#	translation	6 0 -11
+	#}
+
+	#BAUM {
+	#	translation	4.5 0 -10
+	#}
+
+	BAUM {
+		translation	7.5 0 -8
+	}
+
+	BAUM {
+		translation	3 0 -8
+	}
+
+	BAUM {
+		translation	6 0 -7
+	}
+
+	BAUM {
+		translation	4.5 0 -6
+	}
+
+	#BAUM {
+	#	translation	7.5 0 -5
+	#}
+
+	BAUM {
+		translation	3 0 -4
+	}
+
+	#BAUM {
+	#	translation	6 0 -3
+	#}
+
+	#BAUM {
+	#	translation	4.5 0 -2
+	#}
+
+	BAUM {
+		translation	7.5 0 -1
+	}
+
+	#BAUM {
+	#	translation	3 0 -20
+	#}
+
+	BAUM {
+		translation	7.5 0 -19.5
+	}
+
+	#BAUM {
+	#	translation	4.5 0 -18
+	#}
+
+	#BAUM {
+	#	translation	7.5 0 -17
+	#}
+
+	BAUM {
+		translation	3 0 -16
+	}
+
+	BAUM {
+		translation	6 0 -15
+	}
+
+	BAUM {
+		translation	4.5 0 -14
+	}
+
+	BAUM {
+		translation	7.5 0 -13
+	}
+
+	BAUM {
+		translation	3 0 -12
+	}
+
+
+	BAUM {
+		translation	3 0 -16
+	}
+
+
+
+	BAUM {
+		translation	-5 0 -21
+	}
+
+	BAUM {
+		translation	-2 0 -23
+	}
+
+	BAUM {
+		translation	-5 0 -26
+	}
+
+	BAUM {
+		translation	-2 0 -28
+	}
+
+
+
+	BAUM {
+		translation	-6 0 -30
+	}
+
+
+	BAUM {
+		translation	5 0 -26
+	}
+
+	BAUM {
+		translation	9 0 -28
+	}
+
+
+	BAUM {
+		translation	12 0 -22
+	}
+
+	BAUM {
+		translation	15 0 -24
+	}
+
+	BAUM {
+		translation	13 0 -28
+	}
+
+	BAUM {
+		translation	11 0 -30
+	}
+
+	BAUM {
+		translation	16 0 -27
+	}
+
+
+	BAUM {
+		translation	8 0 -31
+	}
+
+	BAUM {
+		translation	5 0 -31
+	}
+
+	BAUM {
+		translation	2 0 -31
+	}
+
+	BAUM {
+		translation	-1 0 -31
+	}
+
+	BAUM {
+		translation	-4 0 -31
+	}
+
+
+
+
+	BAUM {
+	   translation 2 0 2
+	   hoehe 0.1 0.1 0.1
+	}
+
+	BAUM {
+	   translation 4 0 3
+	   hoehe 0.2 0.2 0.2
+	}
+
+	BAUM {
+	   translation 7 0 1
+	   hoehe 0.3 0.3 0.3
+	}
+
+	BAUM {
+	   translation 1 0 6
+	   hoehe 0.4 0.4 0.4
+	}
+
+	BAUM {
+	   translation 10 0 5
+	   hoehe 1 0.5 0.5
+	}
+
+	BAUM {
+	   translation -4 0 5
+	   hoehe 0.6 0.6 0.6
+
+	}
+
+	BAUM {
+	   translation -1 0 -5
+	   hoehe 0.7 0.7 0.7
+	   krone 4
+	}
+
+	BAUM {
+	   translation -6 0 -2
+	   hoehe 0.8 0.8 0.8
+	   farbe 0.4 0.8 0.3
+	}
+
+	BAUM {
+	   translation 4 0 4
+	   hoehe 0.4 0.9 0.9
+	}
+
+	BAUM {
+	   translation -1 0 -1
+	   hoehe 0.1 0.1 0.1
+	}
+	##
+	BAUM {
+	   translation 2.5 0 2
+	   hoehe 0.3 0.4 0.1
+	}
+
+	BAUM {
+	   translation 4.5 0 3
+	   hoehe 0.2 0.7 0.6
+	}
+
+	BAUM {
+	   translation 7.5 0 1
+	   hoehe 0.5 0.6 0.4
+	}
+
+	BAUM {
+	   translation 1.5 0 6
+	   hoehe 0.4 0.8 0.5
+	}
+
+	BAUM {
+	   translation 10.5 0 5
+	   hoehe 0.5 0.4 0.3
+	}
+
+	BAUM {
+	   translation -4.5 0 5
+	   hoehe 0.5 0.3 0.2
+
+	}
+
+	BAUM {
+	   translation -1.5 0 -5
+	   hoehe 0.5 1.1 0.8
+	   krone 4
+	}
+
+	BAUM {
+	   translation 6.5 0 -2
+	   hoehe 0.3 0.6 0.4
+
+	}
+
+	BAUM {
+	   translation 4.5 0 4
+	   hoehe 0.2 0.4 0.5
+	}
+
+	BAUM {
+	   translation -1.5 0 -1
+	   hoehe 0.7 0.9 0.5
+	}
+	####
+	BAUM {
+	   translation 2 0 2
+	   hoehe 0.1 0.1 0.1
+	}
+
+	BAUM {
+	   translation 4 0 3
+	   hoehe 0.2 0.2 0.2
+	}
+
+	BAUM {
+	   translation 7 0 1
+	   hoehe 0.3 0.3 0.3
+	}
+
+	BAUM {
+	   translation 1 0 6
+	   hoehe 0.4 0.4 0.4
+	}
+
+	BAUM {
+	   translation 10 0 5
+	   hoehe 1 0.5 0.5
+	}
+
+	BAUM {
+	   translation -4 0 5
+	   hoehe 0.6 0.6 0.6
+
+	}
+
+	BAUM {
+	   translation -1 0 -5
+	   hoehe 0.7 0.7 0.7
+	   krone 4
+	}
+
+	BAUM {
+	   translation -6 0 -2
+	   hoehe 0.8 0.8 0.8
+	   farbe 0.4 0.8 0.3
+	}
+
+	BAUM {
+	   translation 4 0 4
+	   hoehe 0.4 0.9 0.9
+	}
+
+	BAUM {
+	   translation -1 0 -1
+	   hoehe 0.1 0.1 0.1
+	}
+	##
+	BAUM {
+	   translation 2.5 0 2
+	   hoehe 0.3 0.4 0.1
+	}
+
+	BAUM {
+	   translation 4.5 0 3
+	   hoehe 0.2 0.7 0.6
+	}
+
+	BAUM {
+	   translation 7.5 0 1
+	   hoehe 0.5 0.6 0.4
+	}
+
+	BAUM {
+	   translation 1.5 0 6
+	   hoehe 0.4 0.8 0.5
+	}
+
+	BAUM {
+	   translation 10.5 0 5
+	   hoehe 0.5 0.4 0.3
+	}
+
+	BAUM {
+	   translation -4.5 0 5
+	   hoehe 0.5 0.3 0.2
+
+	}
+
+	BAUM {
+	   translation -1.5 0 -5
+	   hoehe 0.5 1.1 0.8
+	   krone 4
+	}
+
+	BAUM {
+	   translation 6.5 0 -2
+	   hoehe 0.3 0.6 0.4
+
+	}
+
+	BAUM {
+	   translation 4.5 0 4
+	   hoehe 0.2 0.4 0.5
+	}
+
+	BAUM {
+	   translation -1.5 0 -1
+	   hoehe 0.7 0.9 0.5
+	}
+
+	BAUM {
+	   translation 8 0 -7
+	   hoehe 0.6 0.5 1
+	} 
+
+
+	]
+		} # end of Wald
+
+
+		# Baum, der alles zum sinken bringt
+		DEF FallBaum Transform {
+		  rotation 0 0 0 0
+		  children [
+
+			BAUM {
+				translation	2 0 -27.3
+				hoehe 0.1 0.1 0.1
+    		}
+    		DEF BaumTimer TimeSensor {
+	    		cycleInterval 8
+	    		loop  FALSE
+    		}
+
+    		DEF BaumFallen OrientationInterpolator {
+	    		key	      [0  , 1]
+	    		keyValue  [ 0 0 0 0 ,  -1 0 0 3.14 ]
+    		}
+
+			DEF	FogFade ScalarInterpolator {
+				key			[0 , 1]
+				keyValue	[10, 50]
+			}
+
+    		DEF BaumTouch TouchSensor {}
+	 
+		  ]
+
+
+		  ROUTE	BaumTouch.touchTime TO BaumTimer.startTime
+		  ROUTE	BaumTimer.fraction_changed  TO FogFade.set_fraction
+		  ROUTE	BaumTimer.fraction_changed TO BaumFallen.set_fraction
+		  ROUTE	FogFade.value_changed  TO Foggy.visibilityRange
+		  ROUTE	FogFade.value_changed  TO Info.visibilityLimit
+		  ROUTE	BaumFallen.value_changed TO	Faellt.rotation
+		}
+
+		]
+
+	}
+
+
+
+
+	DEF Strasse Group {
+	  children [
+	Transform {
+	  translation -8.5 0 -38.5
+	  children Shape {
+    	appearance Appearance {
+    	  material Material {diffuseColor 0.1 0.1 0.1}
+    	}
+    	geometry Box {size 4 0.1 100}
+	  }
+	}
+
+	DEF Streifen Transform {
+	  translation -8.5 0 -88
+	  children Shape {
+    	appearance Appearance {
+    	  material Material {diffuseColor 1 1 1}
+    	}
+    	geometry Box {size 0.1 0.1 1}
+	  }
+
+	}	 # Fahrbahnmarkierungen
+
+	Transform {
+	   translation 0 0.01 2
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 4
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 6
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 8
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 10
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 12
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 14
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 16
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 18
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 20
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 22
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 24
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 26
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 28
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 30
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 32
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 34
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 36
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 38
+	   children [ USE Streifen ]
+
+	}
+
+	Transform {
+	   translation 0 0.01 40
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 42
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 44
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 46
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 48
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 50
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 52
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 54
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 56
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 58
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 60
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 62
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 64
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 66
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 68
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 70
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 72
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 74
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 76
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 78
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 80
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 82
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 84
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 86
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 88
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 90
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 92
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 94
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 96
+	   children [ USE Streifen ]
+	}
+
+	Transform {
+	   translation 0 0.01 98
+	   children [ USE Streifen ]
+	}
+
+	#Transform {
+	#   translation 0 0.01 100
+	#   children [ USE Streifen ]
+	#}
+
+
+	]
+	} #end of Strasse
+
+
+	# Mond, leuchtend
+	DEF Luna Transform {
+	  translation 100 500 -100
+	  children [
+    	Shape {
+    	  appearance Appearance {
+        	texture ImageTexture {
+        	  url "luna2.jpg"
+        	  repeatS FALSE
+        	  repeatT FALSE
+        	}
+    	  }
+    	  geometry Sphere {
+        	radius 50
+    	  }
+    	}
+    	PointLight {
+    	  color 0.7 0.8 1
+    	  intensity 0.7
+    	  ambientIntensity 0.5
+    	  radius 50000
+    	}
+	  ]
+	}
+
+
+	DEF Auto Transform {         #Karroserie
+	   translation -7.5 0.5 -30
+	   children [
+    	  Shape {
+        	 geometry Box{size 1 1 2}
+        	 appearance Appearance {
+            	material Material {diffuseColor 0 0 1}
+        	 }
+    	  }
+
+    	  Transform{             #Dach
+        	 translation 0 0.85 0
+        	 children [
+            	Shape {
+            	   geometry Box{size 1 .7 1}
+            	   appearance Appearance {
+                	  material Material {diffuseColor 0 1 0}
+            	   }
+            	}
+        	 ]
+    	  }      
+	DEF AutoTimer TimeSensor
+	{
+	   cycleInterval 30.0
+	   loop FALSE
+	   stopTime 1
+	}
+
+	DEF AutoBeweger PositionInterpolator
+	{
+	   key      [0.0, 0.5, 1.0]
+	   keyValue [-7.5 0.5 -30, -7.5 0.5 -50, -7.5 0.5 -88]
+	}
+
+	DEF	UserBeweger PositionInterpolator
+	{
+		key	     [0, 0.5, 0.95, 1.0]
+		keyValue [-7.5 2 -26, -7.5 2 -46, -7.5 2 -80, -7.5 2 -90]
+	}
+
+	DEF AutoTouch TouchSensor {}
+	   ]
+
+	ROUTE AutoTimer.fraction_changed TO AutoBeweger.set_fraction
+	ROUTE AutoTimer.fraction_changed TO	UserBeweger.set_fraction
+	ROUTE AutoBeweger.value_changed TO Auto.translation
+	ROUTE UserBeweger.value_changed	TO vorne.position
+	ROUTE AutoTouch.touchTime TO AutoTimer.startTime
+	}
+
+
+
+	#DEF Vogel Transform {			# Vogel
+	#	translation	24 12 -15
+	#	rotation 0 1 0.2 3.9
+	#	children [
+	#		Transform {
+	#			children Shape {
+	#				appearance Appearance {
+	#					material Material {diffuseColor	0.6 0.5 0.3}
+	#					}
+	#				geometry Sphere	{
+	#				radius 0.5
+	#				} # Kopf
+
+	#			}
+	#		}
+	#		Transform {
+	#			translation	0 -0.2 -0.5
+	#			children Shape {
+	#				appearance Appearance {
+	#					material Material {diffuseColor	0.6 0.5 0.3}
+	#				}
+	#				geometry Sphere	{
+	#					radius 0.7
+	#				} # Körper
+	#			}
+	#		}
+	#		DEF Rfl Transform {	 # Rechter Flügel
+	#			translation	0 -0.2 -0.5
+	#			rotation 0 0 0.5 -0.5
+	#			children Shape {
+	#				appearance	Appearance {
+	#					material Material {diffuseColor	0.6 0 0}
+	#				}
+	#				geometry	IndexedFaceSet {
+	#					colorPerVertex FALSE
+	#					coord Coordinate {
+	#						point [
+	#							0, 0.2, -0.6
+	#							0, 0.2, 0.7
+	#							0, -0.2, -0.6
+	#							0, -0.2, 0.7
+	#							-1.8, 0, -0.4
+	#						]
+	#					}
+	#					coordIndex [
+	#						4, 1, 0, -1,
+	#						4, 0, 2, -1,
+	#						4, 2, 3, -1,
+	#						4, 3, 1, -1,
+	#						4, 0, 1, -1,
+	#						4, 2, 0, -1,
+	#						4, 3, 2, -1,
+	#						4, 1, 3, -1,
+	#						1, 0, 2, 3
+	#					]
+	#				}
+							
+	#			}
+	#		}
+
+	#		DEF Lfl Transform {	 # Linker Flügel
+	#			translation	0 -0.2 -0.5
+	#			rotation 0 0 0.5 0.5
+	#			children Shape {
+	#				appearance	Appearance {
+	#					material Material {diffuseColor	0.6 0 0}
+	#				}
+	#				geometry	IndexedFaceSet {
+	#					colorPerVertex FALSE
+	#					coord Coordinate {
+	#						point [
+	#							0, 0.2, -0.6
+	#							0, 0.2, 0.7
+	#							0, -0.2, -0.6
+	#							0, -0.2, 0.7
+	#							1.8, 0, -0.4
+	#						]
+	#					}
+	#					coordIndex [
+	#						4, 1, 0, -1,
+	#						4, 0, 2, -1,
+	#						4, 2, 3, -1,
+	#						4, 3, 1, -1,
+	#						4, 0, 1, -1,
+	#						4, 2, 0, -1,
+	#						4, 3, 2, -1,
+	#						4, 1, 3, -1,
+	#						1, 0, 2, 3
+	#					]
+	#				}
+							
+	#			}
+	#		}
+	#		Transform { # Schwanz
+	#			translation	0 -0.2 -0.8
+	#			children Shape {
+	#				appearance Appearance {
+	#					material Material {diffuseColor	0.6 0.5 0.3}
+	#				}
+	#				geometry IndexedFaceSet	{
+	#					colorPerVertex FALSE
+	#					coord Coordinate {
+	#						point [
+	#							-0.2, 0.2, -0.8
+	#							0.2, 0.2, -0.8
+	#							0.2, -0.2, -0.8
+	#							-0.2, -0.2, -0.8
+	#							0, 0, 0
+	#						]
+	#					}
+	#					coordIndex [
+	#						4, 0, 1, -1,
+	#						4, 1, 2, -1,
+	#						4, 2, 3, -1,
+	#						4, 3, 0, -1,
+	#						4, 0, 3, -1,
+	#						4, 3, 2, -1,
+	#						4, 1, 0, -1,
+	#						4, 2, 1, -1,
+	#						0, 1, 2, 3
+	#					]
+	#				}
+	#			}
+	#		}
+	#		DEF Timer TimeSensor
+	#		{
+	#		   cycleInterval 2.0
+	#		   loop TRUE
+	#		   stopTime 1
+	#		}
+
+	#		DEF	Timer2 TimeSensor
+	#		{
+	#		   cycleInterval 2.0
+	#		   loop TRUE
+	#		   stopTime 1
+
+	#		}
+
+	#		DEF	Timer3 TimeSensor
+	#		{
+	#		   cycleInterval 2.0
+	#		   loop TRUE
+	#		   stopTime 1
+
+	#		}
+
+	#		DEF	Timer4 TimeSensor
+	#		{
+	#		   cycleInterval 2.0
+	#		   loop TRUE
+	#		   stopTime 1
+
+	#		}
+
+	#		DEF Beweger OrientationInterpolator
+	#		{
+	#		   key		[0.0, .5, 1.0]
+	#		   keyValue [0 0 0.5 0.5, 0 0 0.5 -0.6, 0 0 .5 0.5]
+	#		}
+
+
+
+	#		DEF	Beweger2 OrientationInterpolator
+	#		{
+	#			key	[0.0, .5, 1.0]
+	#			keyValue [0 0 0.5 -0.5, 0 0 0.5 0.6, 0 0 .5 -0.5]
+	#		}
+
+	#		DEF	Beweger3 PositionInterpolator
+	#		{
+	#			key	[0.0, 0.08, 0.16, 0.24, 0.32, 0.40, 0.48, 0.56, 0.64, 0.73, 0.82, 0.91, 1.0]
+	#			keyValue [24 12 -15, 22 12 -16, 21 12 -18, 20 12 -21, 21 12 -23, 22 12 -25, 24 12 -26, 26 12 -25, 27 12 -23, 28 12 -21, 27 12 -18, 26 12 -16, 24 12 -15]
+
+	#		}
+
+	#		DEF	Beweger4 OrientationInterpolator
+	#		{
+	#			key	[0.0, .5, .75, 1.0]
+	#			keyValue [0 1 0.2 3.9, 0 1 0.2 -3.9, 0 1 0.2 6.2, 0 1 0.2 3.9]
+	#		}
+
+	#		DEF Touch TouchSensor {}
+	#		DEF	Touch2 TouchSensor {}
+	#		DEF	Touch3 TouchSensor {}
+	#		DEF	Touch4 TouchSensor {}
+
+
+
+
+
+
+	#	]
+	#	ROUTE Touch.touchTime TO Timer.startTime
+	#	ROUTE Timer.fraction_changed TO Beweger.set_fraction
+	#	ROUTE Beweger.value_changed TO Lfl.rotation
+
+	#	ROUTE Touch2.touchTime TO  Timer2.startTime
+	#	ROUTE Timer2.fraction_changed TO Beweger2.set_fraction
+	#	ROUTE Beweger2.value_changed TO	Rfl.rotation
+
+	#	ROUTE Touch3.touchTime TO Timer3.startTime
+	#	ROUTE Timer3.fraction_changed TO Beweger3.set_fraction
+	#	ROUTE Beweger3.value_changed TO	Vogel.translation
+
+	#	ROUTE Touch4.touchTime TO  Timer4.startTime
+	#	ROUTE Timer4.fraction_changed TO Beweger4.set_fraction
+	#	ROUTE Beweger4.value_changed TO	Vogel.rotation
+
+
+
+	#}
+
+]
+
+}
