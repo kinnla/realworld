@@ -1,39 +1,151 @@
 <!DOCTYPE html>
 <html>
-  	<head>
-	    <title>Hello, WebVR! - A-Frame</title>
-	    <meta name="description" content="Hello, WebVR! - A-Frame">
-	    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
-  	</head>
+  <head>
+    <title>Hello, WebVR! - A-Frame</title>
+    <meta name="RealWorld" content="width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no,maximum-scale=1">
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
+  </head>
 
-	<script>
-	    AFRAME.registerComponent('cursor-listener', {
-	      	init: function () {
-		        var sphere= this.el.sceneEl.querySelector("#sphere");
-		        var camera= this.el.sceneEl.querySelector("#camera");
-		          	sphere.addEventListener('click', function(evt){
-		          	camera.setAttribute('position', '2 5 0');
-		        });
-	      	}
-	    });
-  	</script>
+<!--   <script>
+    
+    // define viewpoints and register listener. @todo: refactor this with the new viewpoint logic from aframe-extras
+    AFRAME.registerComponent('cursor-listener', {
+      init: function () {
+        var viewPositions = ["5 1.8 12.5", "-5 1.8 -1", "5 1.8 -29", "0 40 -5"];
+        var viewRotations = ["0 0 0", "0 0 0", "0 270 135", "0 0 -90"];
+        var currentViewIndex = 0;
 
-  	<body>
-    	<a-scene>
-    		<a-assets>
-    			<img id="top" src="nebula.gif"/>
-    		</a-assets>
+        for (var i = 1; i<=6; i++) {
+          var background= this.el.sceneEl.querySelector("#background" + i);
+          var camera= this.el.sceneEl.querySelector("#camera");
+              background.addEventListener('click', function(evt){
+              camera.setAttribute('position', viewPositions[++currentViewIndex % viewPositions.length]);
+              camera.setAttribute('rotation', viewRotations[currentViewIndex % viewRotations.length]);
+          });
+        }
+      }
+    });
+  </script> -->
 
-<!--     		<a-entity>
-    			<a-plane src="#top" height="1000" width="1000" position="50 50 50" rotation="90 0 0"></a-plane>
-    		</a-entity>
- -->
-      		<a-entity id="camera" position="0 0 5" camera look-controls>
-  				<a-entity position="0 0 -1" geometry="primitive: ring; radiusInner: 0.004; radiusOuter: 0.006" material="color: black; shader: flat"></a-entity>
-        		<a-entity cursor position="0 0 -1" geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.025; theta-length:360;" material="color: black; shader: flat;"></a-entity>
-        	</a-entity>
-	      	<a-box id="box" position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" cursor-listener shadow></a-box>
-	      	<a-sky color="#ECECEC"></a-sky>
-    	</a-scene>
-  	</body>
+  <script>
+    AFRAME.registerComponent('foo', {
+      schema: {
+        bar: {type: 'number'},
+        baz: {type: 'string'}
+      },
+
+      init: function () {
+        // Do something when component first attached.
+      },
+
+      update: function () {
+        // Do something when component's data is updated.
+      },
+
+      remove: function () {
+        // Do something the component or its entity is detached.
+      },
+
+      tick: function (time, timeDelta) {
+        // Do something on every scene tick or frame.
+      }
+    });
+  </script>
+  
+  <body>
+    
+    <!-- scene with fog -->
+    <a-scene antialias="true" fog="type: exponential; color: #444; density: 0.2">
+      
+      <!-- load assets. For performance, it is recommended to load each image only once and before rendering starts -->
+      <a-assets>
+        <img id="top" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2Fnebula.jpg?1532545290299"/>
+        <img id="bottom" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2Fsea_mirror.gif?1532545290763"/>
+        <img id="side" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2Fseasky.jpg?1532545290989"/>
+      </a-assets>
+
+      <!-- Camera and movement control via checkpoints. Provided by aframe-extras. -->
+      <a-entity id="rig" movement-controls="controls: checkpoint" checkpoint-controls="mode: animate">
+        <a-entity id="camera" camera
+                  position="5 1.8 12.5" 
+                  look-controls="pointerLockEnabled: true">
+          <a-entity cursor="fuse: true"
+                    position="0 0 -1"
+                    geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03;"
+                    material="color: #CCC; shader: flat;"
+                    visible="false">
+            <a-animation begin="10000" dur="0" attribute="visible" from="false" to="true"></a-animation>
+            <a-animation begin="click" easing="ease-in" attribute="scale" dur="150"
+               fill="forwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
+            <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale" dur="1500"
+               fill="backwards" from="1 1 1" to="0.1 0.1 0.1"></a-animation>
+          </a-entity>
+        </a-entity>
+      </a-entity>
+
+      <!-- Light -->
+      <a-entity light="type: directional; color: #F66; intensity: 1" position="1 0.5 1"></a-entity>
+      
+      <!-- for debugging purpose a grid is displayed in this world. @todo remove for release -->
+<!--       <a-grid></a-grid> -->
+
+      <!-- Background. We are in a cube, but initially this fact is hidden by the fog surrounding us -->
+      <a-entity>
+        <a-image id="background1" src="#top" height="1000" width="1000" rotation="90 0 0" position="0 500 0"></a-image>
+        <a-image id="background2" src="#bottom" height="1000" width="1000" rotation="-90 0 0" position="0 -500 0"></a-image>
+        <a-image id="background3" src="#side" height="1000" width="1000" rotation="0 0 0" position="0 0 -500"></a-image>
+        <a-image id="background4" src="#side" height="1000" width="1000" rotation="0 90 0" position="-500 0 0"></a-image>
+        <a-image id="background5" src="#side" height="1000" width="1000" rotation="0 -90 0" position="500 0 0"></a-image>
+        <a-image id="background6" src="#side" height="1000" width="1000" rotation="0 180 0" position="0 0 500"></a-image>
+      </a-entity>
+
+      <!-- welcome text -->
+      <a-entity position="5 2 9">
+        <a-entity position="0 0 0" text="value: Welcome to the Real World; width: 8; opacity: 0">
+          <a-animation attribute="text.opacity" begin="2000" dur="5000" from="0" to="1" easing="ease-out-sine"></a-animation>
+          <a-animation attribute="text.opacity" begin="7000" dur="5000" from="1" to="0" easing="ease-in-sine"></a-animation>
+        </a-entity>
+        <a-entity position="0 -0.8 0" text="value: Finde den Weg durch den Wald; width: 8; opacity: 0">
+          <a-animation attribute="text.opacity" delay="7000" dur="5000" from="0" to="1" easing="ease-out-sine"></a-animation>
+          <a-animation attribute="text.opacity" delay="12000" dur="5000" from="1" to="0" easing="ease-in-sine"></a-animation>
+        </a-entity>
+      </a-entity>
+      
+      <!-- First Island (Forest, house) -->
+      <a-plane position="5 0 -10" width="23" height="43" rotation="-90 0 0" color="#783">
+        <a-entity id="forest">
+          
+        <!-- Prototype tree -->
+        
+        
+        </a-entity>
+      
+      </a-plane>
+	    
+      
+      
+      <a-box id="box" position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" shadow></a-box>
+      <a-sphere id="sphere" position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
+      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow></a-cylinder>
+      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" shadow></a-plane>
+      <a-sky color="#ECECEC"></a-sky>
+
+    </a-scene>
+    
+<!--   <script>
+    // Animate opacity
+    var opacity = document.getElementById('welcometext1');
+    var obj = {opacity: 0};
+    var tween = new AFRAME.TWEEN.Tween(obj)
+      .to({opacity: 1}, 5000)
+      .repeat( once )
+      .yoyo( true )
+      .onUpdate(function () {
+        opacity.setAttribute('text', 'opacity', obj.opacity);
+      })
+      .start();
+  </script> -->
+
+  </body>
 </html>
