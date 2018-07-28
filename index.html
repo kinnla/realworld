@@ -5,6 +5,7 @@
     <meta name="RealWorld" content="width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no,maximum-scale=1">
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
+    <script src="tree.js"></script>
   </head>
 
 <!--   <script>
@@ -28,75 +29,25 @@
     });
   </script> -->
 
-  <script>
-    AFRAME.registerComponent('tree', {
-      schema: {
-        height: {type: 'number', default: 9.0},
-        crown: {type: 'number', default: 2.0},
-        trunk: {type: 'number', default: 0.3}
-      },
-
-      init: function () {
-        let trunk = document.createElement('a-cylinder');
-        trunk.setAttribute('radius', this.data.trunk);
-        trunk.setAttribute('height', this.data.height * 5.0/9.0);
-        trunk.setAttribute('color', "#754");
-        trunk.object3D.position.y += this.data.height * 5.0/18.0;
-        this.el.appendChild(trunk);
-        
-        let crown = document.createElement('a-cone');
-        crown.setAttribute('radius', this.data.crown);
-        crown.setAttribute('height', this.data.height * 4.0/9.0);
-        crown.setAttribute('color', "#6d4");
-        crown.object3D.position.y += this.data.height * 14.0/18.0;
-        this.el.appendChild(crown);        
-      },
-
-      update: function () {
-        // Do something when component's data is updated.
-      },
-
-      remove: function () {
-        // Do something the component or its entity is detached.
-      },
-
-      tick: function (time, timeDelta) {
-        // Do something on every scene tick or frame.
-      }
-    });
-  </script>
-  
-  
-  <script>
-    AFRAME.registerComponent('clone', {
-      schema: {
-        type: 'selector'
-      },
-
-      init: function () {
-        var cloneGeom = this.data.object3D.clone(true);
-        cloneGeom.visible = true;
-        this.el.setObject3D('clone', cloneGeom);
-      }
-    });
-  </script>
   
   
   <body>
     
     <!-- scene with fog -->
-    <a-scene antialias="true" fog="type: exponential; color: #444; density: 0.05">
+    <a-scene antialias="true" fog="type: exponential; color: #444; density: 0.005">
       
       <!-- load assets. For performance, it is recommended to load each image only once and before rendering starts -->
       <a-assets>
         <img id="top" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2Fnebula.jpg?1532545290299"/>
         <img id="bottom" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2Fsea_mirror.gif?1532545290763"/>
         <img id="side" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2Fseasky.jpg?1532545290989"/>
+        <img id="wall" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2Fziegel.jpg?1532545289954"/>
+        <img id="roof" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2Fziegel-dach.jpg?1532545289854"/>
       </a-assets>
 
       <!-- Camera and movement control via checkpoints. Provided by aframe-extras. -->
       <!-- @todo: move camera to the origin 0 0 0, center world around it -->
-      <a-entity id="rig" movement-controls="controls: checkpoint" checkpoint-controls="mode: animate">
+<!--       <a-entity id="rig" movement-controls="controls: checkpoint" checkpoint-controls="mode: animate">
         <a-entity id="camera" camera
                   position="5 1.8 12.5" 
                   look-controls="pointerLockEnabled: true">
@@ -113,6 +64,10 @@
           </a-entity>
         </a-entity>
       </a-entity>
+       -->
+      <!-- alternative camera with keyboard control (for debuging) -->
+      <a-entity position="5 1.8 12.5" rotation="0 0 0"><a-camera><a-cursor></a-cursor></a-camera></a-entity>
+      <a-box position="5 1.8 12.5" color="red" material="emissive: red"></a-box>
 
       <!-- Light -->
       <a-entity light="type: directional; color: #F66; intensity: 1" position="1 0.5 1"></a-entity>
@@ -139,36 +94,153 @@
         </a-entity>
       </a-entity>
       
-      <!-- First Island (Forest, house) -->
-      <a-plane position="5 0 -10" width="23" height="43" rotation="-90 0 0" color="#783">
-        <a-entity id="forest" rotation="90 0 0">
-          
+      <!-- First Island @todo: material bearbeiten, dass es mehr nach Waldboden aussieht (weniger metallisch, Licht schluckend) -->
+      <a-box position="5 0 -11" width="23" height="0.1" depth="43" color="#783">
         
-          
-          <!-- Prototype tree -->
-<!--           <a-entity id="tree">
-            <a-cylinder id="cylinder" radius="0.3" height="5" color="#754" position="0 2.5 0"></a-cylinder>
-            <a-cone radius="2" height="4" color="#6d4" position="0 7 0"></a-cone>
-          </a-entity>
-          <a-entity clone="#tree" position="2 0 0" #cylinder.radius="4"></a-entity>
-         -->
-
-          <a-entity tree></a-entity>
-          <a-entity tree position="2 0 0" crown="4"></a-entity>
-
+        <a-entity id="house" position="-1 0 -11">
+          <a-box material="src: #wall" position="0 1 0" width="4" height="2" depth="4"></a-box> 
+          <a-box position="-0.5 5 0" width="0.5" height="1.5" depth="0.5" color="#ddd"></a-box> 
+          <a-cylinder material="src: #roof; repeat: 10 10" height="4" radius="2.5" rotation="-90 0 0" segments-radial="3" position="0 3 0" ></a-cylinder> 
+	       
+        </a-entity>
         
+        
+        <!-- Forest @todo: procedural generation of forest, or reading coordinates from a file/ from an array -->
+        <a-entity id="forest" position="-5 0 10" visible="true">
+          <a-entity tree="height: 6" position="16.1 0 11"></a-entity>
+          <a-entity tree position="13 0 10"></a-entity>
+          <a-entity tree position="10 0 9"></a-entity>
+          <a-entity tree="height: 6" position="16 0 8.2"></a-entity>
+          <a-entity tree position="13 0 7"></a-entity>
+          <a-entity tree="height: 7" position="16 0 5.1"></a-entity>
+          <a-entity tree position="11 0 3"></a-entity>
+          <a-entity tree="height: 6" position="16.2 0 2.1"></a-entity>
+          <a-entity tree position="13 0 -11"></a-entity>
+          <a-entity tree="height: 7" position="16.1 0 -9.9"></a-entity>
+          <a-entity tree position="10 0 -9"></a-entity>
+          <a-entity tree position="13 0 -8"></a-entity>
+          <a-entity tree="height: 8" position="16 0 -7.1"></a-entity>
+          <a-entity tree="height: 10" position="16 0 -3.9"></a-entity>
+          <a-entity tree position="10 0 -3"></a-entity>
+          <a-entity tree="height: 7" position="16.1 0 -1.1"></a-entity>
+          <a-entity tree position="10 0 -20"></a-entity>
+          <a-entity tree position="13 0 -19"></a-entity>
+          <a-entity tree="height: 9" position="16.1 0 -18.1"></a-entity>
+          <a-entity tree position="10 0 -17"></a-entity>
+          <a-entity tree position="13 0 -16"></a-entity>
+          <a-entity tree="height: 7" position="16 0 -15.2"></a-entity>
+          <a-entity tree position="13 0 -13"></a-entity>
+          <a-entity tree="height: 7" position="16.1 0 -12.1"></a-entity>
+          <a-entity tree="height: 7" position="-6.1 0 11"></a-entity>
+          <a-entity tree position="-3 0 10"></a-entity>
+          <a-entity tree position="0 0 9"></a-entity>
+          <a-entity tree="height: 8" position="-6 0 8.1"></a-entity>
+          <a-entity tree position="-3 0 7"></a-entity>
+          <a-entity tree position="0 0 6"></a-entity>
+          <a-entity tree="height: 6" position="-5.9 0 5.2"></a-entity>
+          <a-entity tree position="-3 0 4"></a-entity>
+          <a-entity tree position="0 0 3"></a-entity>
+          <a-entity tree="height: 7" position="-6.1 0 2.1"></a-entity>
+          <a-entity tree position="0 0 -12"></a-entity>
+          <a-entity tree position="-3 0 -11"></a-entity>
+          <a-entity tree="height: 4" position="-6.1 0 -10.3"></a-entity>
+          <a-entity tree="height: 7" position="-6.2 0 -7.1"></a-entity>
+          <a-entity tree position="0 0 -6"></a-entity>
+          <a-entity tree="height: 8" position="-6 0 -4.2"></a-entity>
+          <a-entity tree position="0 0 -3"></a-entity>
+          <a-entity tree position="-6.1 0 -1.1"></a-entity>
+          <a-entity tree position="0 0 -20"></a-entity>
+          <a-entity tree position="-3 0 -19"></a-entity>
+          <a-entity tree="height: 8" position="-5.9 0 -18.3"></a-entity>
+          <a-entity tree position="0 0 -17"></a-entity>
+          <a-entity tree position="-3 0 -16"></a-entity>
+          <a-entity tree="height: 5" position="-6.2 0 -15.2"></a-entity>
+          <a-entity tree position="0 0 -14"></a-entity>
+          <a-entity tree position="-3 0 -13"></a-entity>
+          <a-entity tree="height: 4" position="-6.1 0 -12.1"></a-entity>
+          <a-entity tree position="7.5 0 11"></a-entity>
+          <a-entity tree position="3 0 8"></a-entity>
+          <a-entity tree position="4.5 0 6"></a-entity>
+          <a-entity tree position="6 0 5"></a-entity>
+          <a-entity tree position="3 0 4"></a-entity>
+          <a-entity tree position="4.5 0 2"></a-entity>
+          <a-entity tree position="6 0 1"></a-entity>
+          <a-entity tree position="3 0 -12"></a-entity>
+          <a-entity tree position="7.5 0 -8"></a-entity>
+          <a-entity tree position="3 0 -8"></a-entity>
+          <a-entity tree position="6 0 -7"></a-entity>
+          <a-entity tree position="4.5 0 -6"></a-entity>
+          <a-entity tree position="3 0 -4"></a-entity>
+          <a-entity tree position="7.5 0 -1"></a-entity>
+          <a-entity tree position="7.5 0 -19.5"></a-entity>
+          <a-entity tree position="3 0 -16"></a-entity>
+          <a-entity tree position="6 0 -15"></a-entity>
+          <a-entity tree position="4.5 0 -14"></a-entity>
+          <a-entity tree position="7.5 0 -13"></a-entity>
+          <a-entity tree position="3 0 -12"></a-entity>
+          <a-entity tree position="3 0 -16"></a-entity>
+          <a-entity tree position="-5 0 -21"></a-entity>
+          <a-entity tree position="-2 0 -23"></a-entity>
+          <a-entity tree position="-5 0 -26"></a-entity>
+          <a-entity tree position="-2 0 -28"></a-entity>
+          <a-entity tree position="-6 0 -30"></a-entity>
+          <a-entity tree position="5 0 -26"></a-entity>
+          <a-entity tree position="9 0 -28"></a-entity>
+          <a-entity tree position="12 0 -22"></a-entity>
+          <a-entity tree position="15 0 -24"></a-entity>
+          <a-entity tree position="13 0 -28"></a-entity>
+          <a-entity tree position="11 0 -30"></a-entity>
+          <a-entity tree position="16 0 -27"></a-entity>
+          <a-entity tree position="8 0 -31"></a-entity>
+          <a-entity tree position="5 0 -31"></a-entity>
+          <a-entity tree position="2 0 -31"></a-entity>
+          <a-entity tree position="-1 0 -31"></a-entity>
+          <a-entity tree position="-4 0 -31"></a-entity>
+          <a-entity tree="height: 1" position="2 0 2"></a-entity>
+          <a-entity tree="height: 2" position="4 0 3"></a-entity>
+          <a-entity tree="height: 3" position="7 0 1"></a-entity>
+          <a-entity tree="height: 4" position="1 0 6"></a-entity>
+          <a-entity tree="height: 5" position="10 0 5"></a-entity>
+          <a-entity tree="height: 6" position="-4 0 5"></a-entity>
+          <a-entity tree="height: 7; crown: 4" position="-1 0 -5"></a-entity>
+          <a-entity tree="height: 8" position="-6 0 -2"></a-entity>
+          <a-entity tree="height: 9" position="4 0 4"></a-entity>
+          <a-entity tree="height: 1" position="-1 0 -1"></a-entity>
+          <a-entity tree="height: 4" position="2.5 0 2"></a-entity>
+          <a-entity tree="height: 7" position="4.5 0 3"></a-entity>
+          <a-entity tree="height: 6" position="7.5 0 1"></a-entity>
+          <a-entity tree="height: 8" position="1.5 0 6"></a-entity>
+          <a-entity tree="height: 4" position="10.5 0 5"></a-entity>
+          <a-entity tree="height: 3" position="-4.5 0 5"></a-entity>
+          <a-entity tree="height: 11; crown: 4" position="-1.5 0 -5"></a-entity>
+          <a-entity tree="height: 6" position="6.5 0 -2"></a-entity>
+          <a-entity tree="height: 4" position="4.5 0 4"></a-entity>
+          <a-entity tree="height: 9" position="-1.5 0 -1"></a-entity>
+          <a-entity tree="height: 1" position="2 0 2"></a-entity>
+          <a-entity tree="height: 2" position="4 0 3"></a-entity>
+          <a-entity tree="height: 3" position="7 0 1"></a-entity>
+          <a-entity tree="height: 4" position="1 0 6"></a-entity>
+          <a-entity tree="height: 5" position="10 0 5"></a-entity>
+          <a-entity tree="height: 6" position="-4 0 5"></a-entity>
+          <a-entity tree="height: 7; crown: 4" position="-1 0 -5"></a-entity>
+          <a-entity tree="height: 8" position="-6 0 -2"></a-entity>
+          <a-entity tree="height: 9" position="4 0 4"></a-entity>
+          <a-entity tree="height: 1" position="-1 0 -1"></a-entity>
+          <a-entity tree="height: 4" position="2.5 0 2"></a-entity>
+          <a-entity tree="height: 7" position="4.5 0 3"></a-entity>
+          <a-entity tree="height: 6" position="7.5 0 1"></a-entity>
+          <a-entity tree="height: 8" position="1.5 0 6"></a-entity>
+          <a-entity tree="height: 4" position="10.5 0 5"></a-entity>
+          <a-entity tree="height: 3" position="-4.5 0 5"></a-entity>
+          <a-entity tree="height: 11; crown: 4" position="-1.5 0 -5"></a-entity>
+          <a-entity tree="height: 6" position="6.5 0 -2"></a-entity>
+          <a-entity tree="height: 4" position="4.5 0 4"></a-entity>
+          <a-entity tree="height: 9" position="-1.5 0 -1"></a-entity>
+          <a-entity tree="height: 5" position="8 0 -7"></a-entity>
         </a-entity>
       
       </a-plane>
-	    
-      
-      
-      <a-box id="box" position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" shadow></a-box>
-      <a-sphere id="sphere" position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
-      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow></a-cylinder>
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" shadow></a-plane>
-      <a-sky color="#ECECEC"></a-sky>
-
+	  
     </a-scene>
 
   </body>
