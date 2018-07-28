@@ -29,14 +29,27 @@
   </script> -->
 
   <script>
-    AFRAME.registerComponent('foo', {
+    AFRAME.registerComponent('tree', {
       schema: {
-        bar: {type: 'number'},
-        baz: {type: 'string'}
+        height: {type: 'number', default: 9.0},
+        crown: {type: 'number', default: 2.0},
+        trunk: {type: 'number', default: 0.3}
       },
 
       init: function () {
-        // Do something when component first attached.
+        let trunk = document.createElement('a-cylinder');
+        trunk.setAttribute('radius', this.data.trunk);
+        trunk.setAttribute('height', this.data.height * 5.0/9.0);
+        trunk.setAttribute('color', "#754");
+        trunk.object3D.position.y += this.data.height * 5.0/18.0;
+        this.el.appendChild(trunk);
+        
+        let crown = document.createElement('a-cone');
+        crown.setAttribute('radius', this.data.crown);
+        crown.setAttribute('height', this.data.height * 4.0/9.0);
+        crown.setAttribute('color', "#6d4");
+        crown.object3D.position.y += this.data.height * 14.0/18.0;
+        this.el.appendChild(crown);        
       },
 
       update: function () {
@@ -53,10 +66,26 @@
     });
   </script>
   
+  
+  <script>
+    AFRAME.registerComponent('clone', {
+      schema: {
+        type: 'selector'
+      },
+
+      init: function () {
+        var cloneGeom = this.data.object3D.clone(true);
+        cloneGeom.visible = true;
+        this.el.setObject3D('clone', cloneGeom);
+      }
+    });
+  </script>
+  
+  
   <body>
     
     <!-- scene with fog -->
-    <a-scene antialias="true" fog="type: exponential; color: #444; density: 0.2">
+    <a-scene antialias="true" fog="type: exponential; color: #444; density: 0.05">
       
       <!-- load assets. For performance, it is recommended to load each image only once and before rendering starts -->
       <a-assets>
@@ -66,6 +95,7 @@
       </a-assets>
 
       <!-- Camera and movement control via checkpoints. Provided by aframe-extras. -->
+      <!-- @todo: move camera to the origin 0 0 0, center world around it -->
       <a-entity id="rig" movement-controls="controls: checkpoint" checkpoint-controls="mode: animate">
         <a-entity id="camera" camera
                   position="5 1.8 12.5" 
@@ -75,7 +105,7 @@
                     geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03;"
                     material="color: #CCC; shader: flat;"
                     visible="false">
-            <a-animation begin="10000" dur="0" attribute="visible" from="false" to="true"></a-animation>
+            <a-animation delay="10000" dur="0" attribute="visible" from="false" to="true"></a-animation>
             <a-animation begin="click" easing="ease-in" attribute="scale" dur="150"
                fill="forwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
             <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale" dur="1500"
@@ -87,9 +117,6 @@
       <!-- Light -->
       <a-entity light="type: directional; color: #F66; intensity: 1" position="1 0.5 1"></a-entity>
       
-      <!-- for debugging purpose a grid is displayed in this world. @todo remove for release -->
-<!--       <a-grid></a-grid> -->
-
       <!-- Background. We are in a cube, but initially this fact is hidden by the fog surrounding us -->
       <a-entity>
         <a-image id="background1" src="#top" height="1000" width="1000" rotation="90 0 0" position="0 500 0"></a-image>
@@ -103,8 +130,8 @@
       <!-- welcome text -->
       <a-entity position="5 2 9">
         <a-entity position="0 0 0" text="value: Welcome to the Real World; width: 8; opacity: 0">
-          <a-animation attribute="text.opacity" begin="2000" dur="5000" from="0" to="1" easing="ease-out-sine"></a-animation>
-          <a-animation attribute="text.opacity" begin="7000" dur="5000" from="1" to="0" easing="ease-in-sine"></a-animation>
+          <a-animation attribute="text.opacity" delay="2000" dur="5000" from="0" to="1" easing="ease-out-sine"></a-animation>
+          <a-animation attribute="text.opacity" delay="7000" dur="5000" from="1" to="0" easing="ease-in-sine"></a-animation>
         </a-entity>
         <a-entity position="0 -0.8 0" text="value: Finde den Weg durch den Wald; width: 8; opacity: 0">
           <a-animation attribute="text.opacity" delay="7000" dur="5000" from="0" to="1" easing="ease-out-sine"></a-animation>
@@ -114,10 +141,21 @@
       
       <!-- First Island (Forest, house) -->
       <a-plane position="5 0 -10" width="23" height="43" rotation="-90 0 0" color="#783">
-        <a-entity id="forest">
+        <a-entity id="forest" rotation="90 0 0">
           
-        <!-- Prototype tree -->
         
+          
+          <!-- Prototype tree -->
+<!--           <a-entity id="tree">
+            <a-cylinder id="cylinder" radius="0.3" height="5" color="#754" position="0 2.5 0"></a-cylinder>
+            <a-cone radius="2" height="4" color="#6d4" position="0 7 0"></a-cone>
+          </a-entity>
+          <a-entity clone="#tree" position="2 0 0" #cylinder.radius="4"></a-entity>
+         -->
+
+          <a-entity tree></a-entity>
+          <a-entity tree position="2 0 0" crown="4"></a-entity>
+
         
         </a-entity>
       
@@ -132,20 +170,6 @@
       <a-sky color="#ECECEC"></a-sky>
 
     </a-scene>
-    
-<!--   <script>
-    // Animate opacity
-    var opacity = document.getElementById('welcometext1');
-    var obj = {opacity: 0};
-    var tween = new AFRAME.TWEEN.Tween(obj)
-      .to({opacity: 1}, 5000)
-      .repeat( once )
-      .yoyo( true )
-      .onUpdate(function () {
-        opacity.setAttribute('text', 'opacity', obj.opacity);
-      })
-      .start();
-  </script> -->
 
   </body>
 </html>
