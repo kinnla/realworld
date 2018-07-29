@@ -11,7 +11,7 @@ AFRAME.registerComponent('tree', {
     let trunk = document.createElement('a-cylinder');
     trunk.setAttribute('radius', this.data.trunk == 0 ? this.data.height / 30 : this.data.trunk);
     trunk.setAttribute('height', this.data.height * 5/9);
-    trunk.setAttribute('color', "#754");
+    trunk.setAttribute('color', "#554");
     trunk.object3D.position.y += this.data.height * 5/18;
     this.el.appendChild(trunk);
 
