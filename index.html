@@ -6,7 +6,9 @@
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
     <script src="tree.js"></script>
+    <script src="camera-listener.js"></script>
   </head>
+  <!-- @todo: limit rendered frames per second at THREE.js (fan spins fast, distracts user) -->
 
 <!--   <script>
     
@@ -30,7 +32,6 @@
   </script> -->
 
   
-  
   <body>
     
     <!-- scene with fog -->
@@ -43,14 +44,16 @@
         <img id="side" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2Fseasky.jpg?1532545290989"/>
         <img id="wall" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2Fziegel.jpg?1532545289954"/>
         <img id="roof" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2Fziegel-dach.jpg?1532545289854"/>
+        <img id="person10" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2FPerson10.jpg?1532545289055"/>
+        <img id="person12" src="https://cdn.glitch.com/610fa97a-f228-4f68-a76f-dacec3a94fa1%2FPerson12.jpg?1532545288641"/>
       </a-assets>
 
       <!-- Camera and movement control via checkpoints. Provided by aframe-extras. -->
-      <!-- @todo: move camera to the origin 0 0 0, center world around it -->
-<!--       <a-entity id="rig" movement-controls="controls: checkpoint" checkpoint-controls="mode: animate">
+      <!-- @todo: move rig to the origin 0 0 0, center world around it -->
+      <a-entity id="rig" movement-controls="controls: checkpoint" checkpoint-controls="mode: animate" position="5 1.6 12.5" >
         <a-entity id="camera" camera
-                  position="5 1.8 12.5" 
-                  look-controls="pointerLockEnabled: true">
+                  look-controls="pointerLockEnabled: true"
+                  camera-listener>
           <a-entity cursor="fuse: true"
                     position="0 0 -1"
                     geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03;"
@@ -64,13 +67,19 @@
           </a-entity>
         </a-entity>
       </a-entity>
-       -->
+            
       <!-- alternative camera with keyboard control (for debuging) -->
-      <a-entity position="5 1.8 12.5" rotation="0 0 0"><a-camera><a-cursor></a-cursor></a-camera></a-entity>
+<!--       <a-entity position="5 0 12.5" rotation="0 0 0"><a-camera camera-listener><a-cursor></a-cursor></a-camera></a-entity>
       <a-box position="5 1.8 12.5" color="red" material="emissive: red"></a-box>
-
+ -->
       <!-- Light -->
       <a-entity light="type: directional; color: #F66; intensity: 1" position="1 0.5 1"></a-entity>
+      
+      <a-sphere checkpoint position="-10 -10 8" color="white" material="emissive: white" radius="0.2"></a-sphere>
+      
+      <a-sphere checkpoint position="1 1.6 8" color="white" material="emissive: white" radius="0.2"></a-sphere>
+      
+      <a-sphere checkpoint position="-10 1.6 8" color="white" material="emissive: white" radius="0.2"></a-sphere>
       
       <!-- Background. We are in a cube, but initially this fact is hidden by the fog surrounding us -->
       <a-entity>
@@ -101,7 +110,56 @@
           <a-box material="src: #wall" position="0 1 0" width="4" height="2" depth="4"></a-box> 
           <a-box position="-0.5 5 0" width="0.5" height="1.5" depth="0.5" color="#ddd"></a-box> 
           <a-cylinder material="src: #roof; repeat: 10 10" height="4" radius="2.5" rotation="-90 0 0" segments-radial="3" position="0 3 0" ></a-cylinder> 
-	       
+	        <a-image src="#person12" position="2.05 1 0.5" scale="1.2" rotation="0 90 0"></a-image>
+          
+            # Fenster mit Person 12
+    	    Transform {
+    	      translation -0.8 2 2
+    	      children 
+		      [
+		
+			     Transform {
+				      translation 0 0 0
+				      children LOD { 
+						  
+						  range	[10, 20]
+						  level	[
+							  Shape	 { 
+        						 appearance Appearance {	   
+        					    	texture ImageTexture { 
+      	    			    			url "Person12.jpg"
+      	    			    			repeatS FALSE  
+      	    			    			repeatT FALSE 
+        				    			}
+	    			    			}
+        			    			geometry Box {size 1.8 1.8 0.01} 
+    			    			}
+							  Shape	 { 
+        						 appearance Appearance {	   
+        					    	texture ImageTexture { 
+      	    			    			url "Person10.jpg"
+      	    			    			repeatS FALSE  
+      	    			    			repeatT FALSE 
+        				    			}
+	    			    			}
+        			    			geometry Box {size 1.8 1.8 0.01} 
+    			    			}
+							  Shape	 { 
+        						 appearance Appearance {	   
+        					    	texture ImageTexture { 
+      	    			    			url "Person11.jpg"
+      	    			    			repeatS FALSE  
+      	    			    			repeatT FALSE 
+        				    			}
+	    			    			}
+        			    			geometry Box {size 1.8 1.8 0.01} 
+    			    			}
+							]
+						}
+				
+			    }
+          
+          
         </a-entity>
         
         
