@@ -6,7 +6,7 @@
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
     <script src="tree.js"></script>
-    <script src="camera-listener.js"></script>
+    <script src="camera-logger.js"></script>
   </head>
   <!-- @todo: limit rendered frames per second at THREE.js (fan spins fast, distracts user) -->
 
@@ -53,7 +53,8 @@
       <a-entity id="rig" movement-controls="controls: checkpoint" checkpoint-controls="mode: animate" position="5 1.6 12.5" >
         <a-entity id="camera" camera
                   look-controls="pointerLockEnabled: true"
-                  camera-listener>
+                  position="0 0 5"
+                  camera-logger>
           <a-entity cursor="fuse: true"
                     position="0 0 -1"
                     geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03;"
@@ -74,13 +75,7 @@
  -->
       <!-- Light -->
       <a-entity light="type: directional; color: #F66; intensity: 1" position="1 0.5 1"></a-entity>
-      
-      <a-sphere checkpoint position="-10 -10 8" color="white" material="emissive: white" radius="0.2"></a-sphere>
-      
-      <a-sphere checkpoint position="1 1.6 8" color="white" material="emissive: white" radius="0.2"></a-sphere>
-      
-      <a-sphere checkpoint position="-10 1.6 8" color="white" material="emissive: white" radius="0.2"></a-sphere>
-      
+            
       <!-- Background. We are in a cube, but initially this fact is hidden by the fog surrounding us -->
       <a-entity>
         <a-image id="background1" src="#top" height="1000" width="1000" rotation="90 0 0" position="0 500 0"></a-image>
@@ -102,6 +97,12 @@
           <a-animation attribute="text.opacity" delay="12000" dur="5000" from="1" to="0" easing="ease-in-sine"></a-animation>
         </a-entity>
       </a-entity>
+
+      <!-- checkpoints -->
+      <a-sphere checkpoint position="-3 1.6 10" color="white" material="emissive: white" radius="0.2" visible="false"></a-sphere>
+      <a-sphere checkpoint position="0 1.6 10" color="white" material="emissive: white" radius="0.2"></a-sphere>
+      <a-sphere checkpoint position="3 1.6 10" color="white" material="emissive: white" radius="0.2"></a-sphere>
+
       
       <!-- First Island @todo: material bearbeiten, dass es mehr nach Waldboden aussieht (weniger metallisch, Licht schluckend) -->
       <a-box position="5 0 -11" width="23" height="0.1" depth="43" color="#783">

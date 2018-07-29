@@ -1,4 +1,4 @@
-var AFRAME = require('https://aframe.io/releases/0.8.2/aframe.min.js');
+var AFRAME;
 
 AFRAME.registerComponent('tree', {
   schema: {

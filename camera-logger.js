@@ -1,7 +1,7 @@
-var AFRAME = require('https://aframe.io/releases/0.8.2/aframe.min.js');
-var THREE = require('three');
+var AFRAME;
+var THREE;
 
-AFRAME.registerComponent('camera-listener', {
+AFRAME.registerComponent('camera-logger', {
       
   schema: {
     timestamp: {type: 'int'},
@@ -30,5 +30,4 @@ AFRAME.registerComponent('camera-listener', {
       this.log();
     }
   },
-
 });
