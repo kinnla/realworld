@@ -7,6 +7,7 @@
     <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
     <script src="tree.js"></script>
     <script src="camera-logger.js"></script>
+    <script src="viewpoint.js"></script>
   </head>
   <!-- @todo: limit rendered frames per second at THREE.js (fan spins fast, distracts user) -->
 
@@ -58,7 +59,8 @@
           <a-entity cursor="fuse: true"
                     position="0 0 -1"
                     geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.025;"
-                    material="color: #AAC; shader: flat;">
+                    material="color: #AAC; shader: flat;"
+                    raycaster="far: 20; interval: 1000; objects: .clickable">
             <a-animation begin="click" easing="ease-in" attribute="scale" dur="150"
                fill="forwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
             <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale" dur="1500"
@@ -99,10 +101,10 @@
       </a-entity>
 
       <!-- checkpoints -->
-      <a-entity id="checkpoints">
-        <a-sphere checkpoint="offset: 0 -1.6 0" position="-3 1.6 10" color="white" material="emissive: white" radius="0.1"></a-sphere>
-        <a-sphere checkpoint="offset: 0 -1.6 0" position="0 1.6 10" color="white" material="emissive: white" radius="0.1"></a-sphere>
-        <a-sphere checkpoint="offset: 0 -1.6 0" position="3 1.6 10" color="white" material="emissive: white" radius="0.1"></a-sphere>
+      <a-entity id="viewpoints">
+        <a-entity id="vp_forest1" viewpoint="status: enabled; neighbours: {#vp_forest2}" position="-3 1.6 10"></a-entity>
+        <a-entity id="vp_forest2" viewpoint="neighbours: {#vp_forest1, #vp_forest3}" position="0 1.6 10"></a-entity>
+        <a-entity id="vp_forest3" viewpoint="neighbours: {#vp_forest2}" position="3 1.6 10"></a-entity>
       </a-entity>
       
       <!-- First Island @todo: material bearbeiten, dass es mehr nach Waldboden aussieht (weniger metallisch, Licht schluckend) -->
