@@ -51,11 +51,11 @@
 
       <!-- Camera and movement control via checkpoints. Provided by aframe-extras. -->
       <!-- @todo: move rig to the origin 0 0 0, center world around it -->
-      <a-entity id="rig" movement-controls="controls: checkpoint" checkpoint-controls="mode: animate" position="5 0 12.5" >
+      <a-entity id="rig" movement-controls="controls: checkpoint" checkpoint-controls="mode: animate; animateSpeed: 2.0" position="5 0 12.5" >
         <a-entity id="camera" camera
                   look-controls="pointerLockEnabled: true"
-                  position="0 1.6 0"
-                  camera-logger>
+                  position="0 1.6 0" 
+                  >
           <a-entity cursor="fuse: true"
                     position="0 0 -1"
                     geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.025;"
@@ -102,9 +102,9 @@
 
       <!-- checkpoints -->
       <a-entity id="viewpoints">
-        <a-entity id="vp_forest1" viewpoint="status: enabled; neighbours: {#vp_forest2}" position="-3 1.6 10"></a-entity>
-        <a-entity id="vp_forest2" viewpoint="neighbours: {#vp_forest1, #vp_forest3}" position="0 1.6 10"></a-entity>
-        <a-entity id="vp_forest3" viewpoint="neighbours: {#vp_forest2}" position="3 1.6 10"></a-entity>
+        <a-entity id="vp_forest1" viewpoint="enabled: true; neighbours: #vp_forest2" position="3 1.6 10"></a-entity>
+        <a-entity id="vp_forest2" viewpoint="neighbours: #vp_forest1, #vp_forest3" position="0 1.6 10"></a-entity>
+        <a-entity id="vp_forest3" viewpoint="neighbours: #vp_forest2" position="-3 1.6 10"></a-entity>
       </a-entity>
       
       <!-- First Island @todo: material bearbeiten, dass es mehr nach Waldboden aussieht (weniger metallisch, Licht schluckend) -->

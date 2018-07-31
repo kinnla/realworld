@@ -1,12 +1,32 @@
 var AFRAME;
 
+// global variables
+var sceneEl;
+var targetEl;
+
+/**
+ * viewpoint component
+ * - geometry: small white emitting sphere
+ * - list of neighbour viewpoints that should be enabled when this viewpoint is visited
+ * - wraps around a checkpoint component as its attribute
+ */
 AFRAME.registerComponent ( 'viewpoint', {
   schema: {
-    status: { type: 'string', default: 'disabled' }, // disabled, enabled, active
+    enabled: { type: 'boolean', default: false },
     neighbours: { type: 'array' }
   },
-
+  
   init: function () {
+
+    // init global variables
+    sceneEl = document.querySelector('a-scene');
+    targetEl = sceneEl.querySelector('[checkpoint-controls]');
+    
+    // get reference to the checkpoint-controls component
+    // and check that it exists
+    if (!targetEl) {
+      throw new Error('No `checkpoint-controls` component found.');
+    }
     
     // create sphere
     let sphere = document.createElement('a-sphere');
@@ -18,45 +38,56 @@ AFRAME.registerComponent ( 'viewpoint', {
     // adjust offset, so that the camera flies not above but into the sphere
     this.el.setAttribute ('checkpoint', 'offset: 0 -1.6 0');
     
-    // add event listener: state added
-    this.el.addEventListener ('stateadded', function (evt) {
-            
-      // enabled: show this viewpoint
-      if (evt.detail.name === 'enabled') {
-        this.el.setAttribute ( 'visible', true );
-        this.el.setAttribute ( 'class', 'clickable' );
-      }
-
-      // active: hide this viewpoint but enable its neighbours
-      if (evt.detail.name === 'active') {
-        this.el.setAttribute ( 'visible', false );
-        this.el.setAttribute ( 'class', 'non-clickable' );
-        for (let neighbour of this.data.neighbours) {
-          document.querySelector(neighbour).addState ('enabled');
-        } 
-          
-      } 
-    }); // end of addEventListener: state added
-    
-    // add event listener: state removed
-    this.el.addEventListener ('stateremoved', function (evt) {
-
-      // if the viewpoint was active, we have to disable its neighbours
-      if (evt.detail.name === 'active') {
-        for (let neighbour of this.data.neighbours) {
-          document.querySelector(neighbour).removeState ('enabled');
-        }
-      }
-
-      // if the viewpoint was enabled, we have to hide it
-      if (evt.detail.name === 'enabled') {
-        this.el.setAttribute ( 'visible', false );
-        this.el.setAttribute ( 'class', 'non-clickable' );
-      }
-    }); // end of addEventListener: state removed
-    
-  }
+    // initially enable or disable viewpoint
+    this.setEnabled(this.data.enabled);
+  },
   
+  // enables or disables this viewpoint
+  setEnabled : function (status) {
+    
+    // enable this viewpoint and get notified when it was clicked
+    if (status) {
+      this.el.setAttribute ( 'visible', true );
+      this.el.setAttribute ( 'class', 'clickable' );
+      targetEl.addEventListener('navigation-start', this);
+    }
+    
+    // disable this viewpoint and stop listening
+    else {
+      this.el.setAttribute ( 'visible', false );
+      this.el.setAttribute ( 'class', 'non-clickable' );
+      targetEl.removeEventListener('navigation-start', this);
+    }
+  },
+  
+  // handle events when a viewpoint was clicked
+  handleEvent : function (event) {
+
+    // navigation-start: disable all viewpoints and register the clicked one for navigation-end
+    if (event.type == 'navigation-start') {
+      this.setEnabled(false);
+      if (event.detail.checkpoint.id === this.el.id) {
+        targetEl.addEventListener('navigation-end', this);
+      }
+    }
+    
+    // navigation-end    
+    if (event.type == 'navigation-end') {
+
+      // assert that this viewpoint was clicked
+      if (event.detail.checkpoint.id != this.el.id) {
+        console.log("navigation-end received at viewpoint " + this.el.id + " but clicked viewpoint was " + event.detail.checkpoint.id);
+        return;
+      }
+
+      // enable neighbours
+      for (let neighbour of this.data.neighbours) {
+        let n = sceneEl.querySelector(neighbour);
+        n.components.viewpoint.setEnabled (true);
+      }
+      
+      // stop listening to navigation-end events
+      targetEl.removeEventListener('navigation-end', this);
+    }
+  }
 });
-
-
