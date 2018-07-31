@@ -13,7 +13,8 @@ var targetEl;
 AFRAME.registerComponent ( 'viewpoint', {
   schema: {
     enabled: { type: 'boolean', default: false },
-    neighbours: { type: 'array' }
+    neighbours: { type: 'array' },
+    offset: { type: 'string', default: '0 -1.6 0' } // real type is vec3, but we don't check and just pass the value
   },
   
   init: function () {
@@ -36,7 +37,7 @@ AFRAME.registerComponent ( 'viewpoint', {
     this.el.appendChild ( sphere );
 
     // adjust offset, so that the camera flies not above but into the sphere
-    this.el.setAttribute ('checkpoint', 'offset: 0 -1.6 0');
+    this.el.setAttribute ('checkpoint', 'offset: ' + this.data.offset );
     
     // initially enable or disable viewpoint
     this.setEnabled(this.data.enabled);
