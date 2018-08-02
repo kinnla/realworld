@@ -14,7 +14,7 @@ AFRAME.registerComponent ( 'viewpoint', {
   schema: {
     enabled: { type: 'boolean', default: false },
     neighbours: { type: 'array' },
-    offset: { type: 'string', default: '0 -1.6 0' }, // real type is vec3, but we don't check and just pass the value
+    offset: { type: 'vec3', default: '0 -1.6 0' },
     onclick: { type: 'string' },
     keyCode: { type: 'int' } // if a key code is set, the user can change the camera position to this viewpoint on key-press
   },
@@ -39,7 +39,8 @@ AFRAME.registerComponent ( 'viewpoint', {
     this.el.appendChild ( sphere );
 
     // adjust offset, so that the camera flies not above but into the sphere
-    this.el.setAttribute ('checkpoint', 'offset: ' + this.data.offset );
+    this.el.setAttribute ('checkpoint', 'offset: ' 
+                          + this.data.offset.x + ' ' + this.data.offset.y + ' ' + this.data.offset.z);
     
     // initially enable or disable viewpoint
     this.setEnabled(this.data.enabled);
@@ -71,8 +72,6 @@ AFRAME.registerComponent ( 'viewpoint', {
   // handle events when a viewpoint was clicked
   handleEvent : function (event) {
 
-    console.log(event.type);
-    
     // navigation-start: disable all viewpoint
     if (event.type == 'navigation-start') {
       this.setEnabled(false);
@@ -112,9 +111,9 @@ AFRAME.registerComponent ( 'viewpoint', {
 
       if (event.keyCode === this.data.keyCode && !event.ctrlKey && !event.altKey) {
 
-        var camera = sceneEl.querySelector('#camera');
-        var vp_world_pos = this.el.object3D.getWorldPosition();
-        camera.setAttribute('position', vp_world_pos);
+        let rig = sceneEl.querySelector('#rig');
+        let pos = this.el.object3D.getWorldPosition().add(this.data.offset);
+        rig.setAttribute('position', pos);
 
         // enable neighbours
         for (let neighbour of this.data.neighbours) {

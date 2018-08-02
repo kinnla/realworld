@@ -52,7 +52,7 @@
 
       <!-- Camera and movement control via checkpoints. Provided by aframe-extras. -->
       <a-entity id="rig" movement-controls="controls: checkpoint" checkpoint-controls="mode: animate; animateSpeed: 2.0" position="0 0 0" >
-        <a-entity id="camera" camera
+        <a-entity id="camera" camera camera-logger
                   look-controls="pointerLockEnabled: true"
                   position="0 1.6 0">
           <a-entity cursor="fuse: true"
@@ -115,7 +115,9 @@
           <a-box material="src: #wall" position="0 1 0" width="4" height="2" depth="4"></a-box> 
           <a-box position="-0.5 5 0" width="0.5" height="1.5" depth="0.5" color="#ddd"></a-box> 
           <a-cylinder material="src: #roof; repeat: 10 10" height="4.2" radius="2.5" rotation="-90 0 0" segments-radial="3" position="0 3 0" ></a-cylinder> 
-	        <a-image src="#person12" position="2.05 1 0.5" scale="1.2" rotation="0 90 0"></a-image>
+	        <a-image src="#person12" position="0.7 1 2.01" scale="1.4" rotation="0 0 0"></a-image>
+          
+<!--           <a-entity id="vp_house1" viewpoint="neighbours: #vp_forest15" position="6 1.6 -18"></a-entity> -->
           
 <!--             # Fenster mit Person 12
     	    Transform {
@@ -176,7 +178,17 @@
           <a-entity id="vp_forest2" viewpoint="neighbours: #vp_forest1, #vp_forest3" position="7.5 1.6 5"></a-entity>
           <a-entity id="vp_forest3" viewpoint="neighbours: #vp_forest2, #vp_forest4" position="9.5 1.6 1"></a-entity>
           <a-entity id="vp_forest4" viewpoint="neighbours: #vp_forest3, #vp_forest5" position="12.5 1.6 -1"></a-entity>
-          <a-entity id="vp_forest5" viewpoint="neighbours: #vp_forest4; keyCode: 75" position="11.5 1.6 -4.5"></a-entity>
+          <a-entity id="vp_forest5" viewpoint="neighbours: #vp_forest4, #vp_forest6" position="11.5 1.6 -4.5"></a-entity>
+          <a-entity id="vp_forest6" viewpoint="neighbours: #vp_forest5, #vp_forest7" position="9 1.6 -5.5"></a-entity>
+          <a-entity id="vp_forest7" viewpoint="neighbours: #vp_forest6, #vp_forest8" position="6.5 1.6 -3.5"></a-entity>
+          <a-entity id="vp_forest8" viewpoint="neighbours: #vp_forest7, #vp_forest9" position="2.5 1.6 0"></a-entity>
+          <a-entity id="vp_forest9" viewpoint="neighbours: #vp_forest8, #vp_forest10" position="-1.5 1.6 2.5"></a-entity>
+          <a-entity id="vp_forest10" viewpoint="neighbours: #vp_forest9, #vp_forest11" position="-3 1.6 -1.5"></a-entity>
+          <a-entity id="vp_forest11" viewpoint="neighbours: #vp_forest10, #vp_forest12" position="-3 1.6 -7.5"></a-entity>
+          <a-entity id="vp_forest12" viewpoint="neighbours: #vp_forest11, #vp_forest13" position="-1 1.6 -9.8"></a-entity>
+          <a-entity id="vp_forest13" viewpoint="neighbours: #vp_forest12, #vp_forest14" position="5 1.6 -10.5"></a-entity>
+          <a-entity id="vp_forest14" viewpoint="neighbours: #vp_forest13, #vp_forest15" position="9.5 1.6 -12"></a-entity>
+          <a-entity id="vp_forest15" viewpoint="neighbours: #vp_forest14, #vp_house1; keyCode: 75" position="8 1.6 -16"></a-entity>
      
           <!-- trees -->          
           <a-entity tree="height: 6" position="16.1 0 11"></a-entity>
