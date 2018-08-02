@@ -14,7 +14,9 @@ AFRAME.registerComponent ( 'viewpoint', {
   schema: {
     enabled: { type: 'boolean', default: false },
     neighbours: { type: 'array' },
-    offset: { type: 'string', default: '0 -1.6 0' } // real type is vec3, but we don't check and just pass the value
+    offset: { type: 'string', default: '0 -1.6 0' }, // real type is vec3, but we don't check and just pass the value
+    onclick: { type: 'string' },
+    keyCode: { type: 'int' } // if a key code is set, the user can change the camera position to this viewpoint on key-press
   },
   
   init: function () {
@@ -31,7 +33,7 @@ AFRAME.registerComponent ( 'viewpoint', {
     
     // create sphere
     let sphere = document.createElement('a-sphere');
-    sphere.setAttribute ( 'radius', 0.1 );
+    sphere.setAttribute ( 'radius', 0.08 );
     sphere.setAttribute ( 'color', "#ddd" );
     sphere.setAttribute ( 'material', 'emissive: white' );
     this.el.appendChild ( sphere );
@@ -41,6 +43,11 @@ AFRAME.registerComponent ( 'viewpoint', {
     
     // initially enable or disable viewpoint
     this.setEnabled(this.data.enabled);
+    
+    // check for key code
+    if (this.data.keyCode > 0) {
+      window.addEventListener('keydown', this);
+    }
   },
   
   // enables or disables this viewpoint
@@ -64,11 +71,20 @@ AFRAME.registerComponent ( 'viewpoint', {
   // handle events when a viewpoint was clicked
   handleEvent : function (event) {
 
-    // navigation-start: disable all viewpoints and register the clicked one for navigation-end
+    console.log(event.type);
+    
+    // navigation-start: disable all viewpoint
     if (event.type == 'navigation-start') {
       this.setEnabled(false);
+      
+      // register the clicked viewpoint for navigation-end
       if (event.detail.checkpoint.id === this.el.id) {
         targetEl.addEventListener('navigation-end', this);
+        
+        // call the hook, if any registered
+        if (this.data.onclick != "") {
+          window[this.data.onclick](this);
+        }
       }
     }
     
@@ -89,6 +105,23 @@ AFRAME.registerComponent ( 'viewpoint', {
       
       // stop listening to navigation-end events
       targetEl.removeEventListener('navigation-end', this);
+    }
+    
+    // key down
+    if (event.type == 'keydown') {
+
+      if (event.keyCode === this.data.keyCode && !event.ctrlKey && !event.altKey) {
+
+        var camera = sceneEl.querySelector('#camera');
+        var vp_world_pos = this.el.object3D.getWorldPosition();
+        camera.setAttribute('position', vp_world_pos);
+
+        // enable neighbours
+        for (let neighbour of this.data.neighbours) {
+          let n = sceneEl.querySelector(neighbour);
+          n.components.viewpoint.setEnabled (true);
+        }
+      }
     }
   }
 });

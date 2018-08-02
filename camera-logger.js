@@ -31,3 +31,4 @@ AFRAME.registerComponent('camera-logger', {
     }
   },
 });
+
