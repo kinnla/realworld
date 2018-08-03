@@ -265,37 +265,37 @@
           <a-entity tree="height: 5" position="8 0 -7"></a-entity>
         </a-entity>
       
-      </a-box>
-	  
-      <!-- House -->
-      <a-entity id="house" position="-1 0 -11">
-        <a-box material="src: #wall" position="0 1 0" width="4" height="2" depth="4"></a-box> 
-        <a-box position="-0.5 5 0" width="0.5" height="1.5" depth="0.5" color="#ddd"></a-box> 
-        <a-cylinder material="src: #roof; repeat: 10 10" height="4.2" radius="2.5" rotation="-90 0 0" segments-radial="3" position="0 3 0" ></a-cylinder> 
-        <a-image id="image10" src="#person10" position="0.7 1 2.01" scale="1.4"></a-image>
-        <a-image id="image11" src="#person11" position="0.7 1 2.01" scale="1.4" visible="false"></a-image>          
-        <a-image id="image12" src="#person12" position="0.7 1 2.01" scale="1.4" visible="false"></a-image>
+        <!-- House -->
+        <a-entity id="house" position="-1 0 -11">
+          <a-box material="src: #wall" position="0 1 0" width="4" height="2" depth="4"></a-box> 
+          <a-box position="-0.5 5 0" width="0.5" height="1.5" depth="0.5" color="#ddd"></a-box> 
+          <a-cylinder material="src: #roof; repeat: 10 10" height="4.2" radius="2.5" rotation="-90 0 0" segments-radial="3" position="0 3 0" ></a-cylinder> 
+          <a-image id="image10" src="#person10" position="0.7 1 2.01" scale="1.4"></a-image>
+          <a-image id="image11" src="#person11" position="0.7 1 2.01" scale="1.4" visible="false"></a-image>          
+          <a-image id="image12" src="#person12" position="0.7 1 2.01" scale="1.4" visible="false"></a-image>
 
-        <a-entity id="vp_house1" viewpoint="neighbours: #vp_forest15; onclick: changePerson" position="2 1.6 4">
-          <script>
-            function changePerson(vp) {
-              let person10 = document.querySelector("#image10");
-              let person11 = document.querySelector("#image11");
-              let person12 = document.querySelector("#image12");
+          <a-entity id="vp_house1" viewpoint="neighbours: #vp_forest15; onclick: changePerson" position="2 1.6 4">
+            <script>
+              function changePerson(vp) {
+                let person10 = document.querySelector("#image10");
+                let person11 = document.querySelector("#image11");
+                let person12 = document.querySelector("#image12");
 
-              if (person10.getAttribute('visible')) {
-                person10.setAttribute('visible', false);
-                person11.setAttribute('visible', true);
+                if (person10.getAttribute('visible')) {
+                  person10.setAttribute('visible', false);
+                  person11.setAttribute('visible', true);
+                }
+                else {
+                  person11.setAttribute('visible', false);
+                  person12.setAttribute('visible', true);
+                  person12.setAttribute('sound', "src: #aldi; autoplay: true");
+                }
               }
-              else {
-                person11.setAttribute('visible', false);
-                person12.setAttribute('visible', true);
-                person12.setAttribute('sound', "src: #aldi; autoplay: true");
-              }
-            }
-          </script>
+            </script>
+          </a-entity>
         </a-entity>
-      </a-entity>
+        
+      </a-box>
     </a-scene>
     
   </body>
