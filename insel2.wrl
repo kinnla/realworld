@@ -1,0 +1,696 @@
+#VRML V2.0 utf8
+
+
+
+
+################################ Insel 2 ###################################
+DEF insel2 Transform {
+  translation 0 0 0 # hier die relative Lage zum Mittelpunkt der Welt eingeben
+
+  children [
+    
+    NavigationInfo {
+      headlight FALSE
+      avatarSize 2
+    }
+
+ #   Viewpoint {
+  #     position 0 1.6 3
+ #      #orientation 0 0 0 0.0
+  #     fieldOfView 0.9
+  #     description "insel2start"
+  #  }
+
+    
+    DEF Boden Transform {
+      translation 0 -15 0
+      rotation 1 0 0 3.14
+      children Shape {
+      
+        geometry Cone {
+        
+          height 30
+          bottomRadius 5
+        }
+        appearance Appearance {
+          material Material {
+            diffuseColor 0.5 0.4 0.3
+          }
+        }
+      }
+    }
+    
+
+    ######################### Ring mit 12 Kerzen ############################# 
+    DEF Kerzenring Transform {
+      translation 0 -2 0
+      scale 3 3 3
+
+
+      PROTO kerze [
+        field SFVec3f translation 0 0 0
+      ]
+
+      {
+
+        Transform {
+          translation IS translation
+          children [
+            PointLight {
+              radius 30
+              intensity 0.2
+              color 1 0.8 0.6
+              attenuation 1 0.2 0
+            }    
+            Billboard {
+               children [
+                  Shape {
+                     appearance Appearance {
+                        texture ImageTexture {
+                           url "candle.gif"
+                        }
+                     }
+                     geometry Box {
+                        size 0.04 0.2 0.0001
+                     }
+                  }
+               ]
+            }
+         
+            #Shape {
+             # appearance Appearance {
+              #  texture ImageTexture {
+               #   url "candle.jpg"
+                #  repeatS FALSE
+         #         repeatT FALSE
+          #      }
+           #   }
+            #  geometry Cylinder {
+             #   radius 0.02
+          #      height 0.2
+           ##   }
+            #}
+          ]
+        } 
+      } # end of PROTO kerze
+
+      children [
+        kerze { translation  1     0   0     }
+        kerze { translation  0.866 0   0.5   }
+        kerze { translation  0.5   0   0.866 }
+        kerze { translation  0     0   1     }
+        kerze { translation -0.5   0   0.866 }
+        kerze { translation -0.866 0   0.5   }
+        kerze { translation -1     0   0     }
+        kerze { translation -0.866 0  -0.5   }
+        kerze { translation -0.5   0  -0.866 }
+        kerze { translation  0     0  -1     }
+        kerze { translation  0.5   0  -0.866 }
+        kerze { translation  0.866 0  -0.5   }
+      
+        DEF kerzpos PositionInterpolator {
+          key [0, 1]
+          keyValue [ 0 -2 0,   0 2 0 ]
+        }
+
+        DEF kerzTimer TimeSensor {
+          cycleInterval 3.0
+          loop FALSE   
+        }
+
+        DEF kerzOrientPolator OrientationInterpolator {
+          key [0, 0.25, 0.5, 0.75, 1]
+          keyValue [  0 1 0 0, 
+                      0 1 0 1.57,
+                      0 1 0 3.14,
+                      0 1 0 4.71,
+                      0 1 0 6.28 
+                   ]
+        }
+
+        DEF kerzTimer2 TimeSensor {
+          cycleInterval 12
+          loop TRUE
+          stopTime 1
+        }
+      ]
+
+      ROUTE kerzTimer.fraction_changed TO kerzpos.set_fraction
+      ROUTE kerzpos.value_changed TO Kerzenring.translation
+
+      ROUTE kerzTimer2.fraction_changed TO kerzOrientPolator.set_fraction
+      ROUTE kerzOrientPolator.value_changed TO Kerzenring.rotation
+      
+    }
+    ################### end of Kerzenring
+
+    
+
+    ##################### Terminal #######################################
+    DEF Terminal Transform {
+      translation 0 1 0
+      scale 0.2 0.2 0.2
+
+    PROTO knopf [
+      field SFInt32 opcode 0
+      eventOut SFInt32 clicked
+      eventOut SFTime clickTime
+      field MFString text "?"
+      field SFVec3f transl 0 0 0
+      exposedField MFString url []
+      eventOut SFBool clickState
+    ]
+
+    {
+      Transform {
+        translation IS transl
+        children [
+          Transform {
+            children Shape  { 
+              appearance Appearance {
+                texture ImageTexture {
+                  url IS url
+                }
+                #material Material {
+                  
+               #   diffuseColor  0.8 1 1
+                #} 
+              }
+              geometry Box {
+                size 0.7 0.7 1
+              }
+            }
+          }
+ 
+          Transform {
+            translation -0.2 -0.2 0.6
+            children [
+              Shape {
+                appearance Appearance {
+                  material Material {
+				            diffuseColor 1 0.1 0
+                  }
+                }
+               # geometry Text {
+               #   string IS text
+			         #   fontStyle FontStyle {
+              #      size 0.8   
+				       #   }
+               # }
+              } 
+            ]
+          }
+          DEF	ts TouchSensor {}
+        ]
+      }
+  
+      DEF intOut Script {
+        field SFInt32 myCode IS opcode
+        eventIn SFTime ts_click
+        eventOut SFInt32 digit IS clicked
+        eventOut SFTime clickTime IS clickTime
+        eventOut SFBool clickState IS clickState
+        
+        url "javascript:
+          function ts_click(wert, zeit) {
+            digit = myCode;
+            clickTime = ts_click;
+            clickState = new SFBool(TRUE);
+          }
+      
+        "
+      }
+  
+      ROUTE ts.touchTime TO intOut.ts_click
+    }
+
+    children [
+
+  
+    DEF	Gehaeuse Transform {
+      translation 0 0.5 -0.1
+      children [
+        Shape { 
+          appearance Appearance {
+            material Material {
+              diffuseColor  0.2 0.8 0.6
+            } 
+          }
+          geometry Box {
+            size 11 5.5 1
+          }
+        }
+      ]
+    } 
+    
+    Transform {  # Textanzeige
+      translation -4 1.8 0.6
+      children Shape {  
+        appearance Appearance {
+          material Material {
+            diffuseColor 0 1 0
+          }
+        }
+        geometry DEF anzeige
+        Text {
+          string "Schalter"
+          fontStyle FontStyle {
+            size 0.8
+          }
+		    }
+	    }
+    }
+
+    Transform { # Text Hintergrund
+      translation 0 2 0
+      children [
+        Shape { 
+          appearance Appearance {
+            material Material {
+              diffuseColor  0 0 0 
+            }
+          }
+          geometry Box {
+            size 9 1 1
+          }
+        }
+      ]
+    } 
+
+    DEF scr1 Script	{
+      field SFNode outp USE anzeige
+      field SFInt32 status 0
+      field SFInt32 operand 0
+      field SFInt32 lastNumber 0
+      field SFInt32 thisNumber 0
+      eventIn SFInt32 w_clicked
+      eventOut SFString result 
+      eventOut SFVec3f scaleOut
+      
+	 
+      url "javascript:
+        function w_clicked (wert) {
+          
+            if (wert == 5) 
+          
+          if (wert < 10) {
+            thisNumber = thisNumber * 10 + wert;
+            outp.string = new MFString(thisNumber);
+            return;
+          }
+          if (operand == 10) {
+            lastNumber = lastNumber + thisNumber;
+          }
+          if (operand == 11) {
+            lastNumber = lastNumber - thisNumber;
+          }
+          if (operand == 12) {
+            lastNumber = lastNumber * thisNumber;
+          }
+          if (operand == 13) {
+            lastNumber = lastNumber / thisNumber;
+          }
+          if (operand == 14) {
+            lastNumber = thisNumber;
+          }
+          operand = wert;
+          thisNumber = 0;
+          outp.string = new MFString(lastNumber);
+
+       
+        }
+
+	    "			    
+    }
+
+    DEF k1   knopf {
+      opcode 1
+      text "1"
+      transl -4 0.5 0
+      url "nero.gif"
+    }
+
+    DEF k2 knopf {
+      opcode 2
+      text "2"
+      transl -2 0.5 0
+      url "kreis.gif"
+    }
+
+    DEF k3 knopf {
+      opcode 3
+      text "3"
+      transl 0 0.5 0
+      url "planet.gif"
+    }
+
+    DEF k4 knopf {
+      opcode 4
+      text "4"
+      transl 2 0.5 0
+      url "rotblauButton.gif"
+    }
+ 
+    DEF k5 knopf {
+      opcode 5
+      text "5"
+      transl 4 0.5 0
+      url "wc.gif"
+    }
+  
+    DEF k6 knopf {
+      opcode 6
+      text "6"
+      transl -4 -0.5 0
+    }
+
+    DEF k7 knopf {
+      opcode 7
+      text "7"
+      transl -2 -0.5 0
+    }
+
+    DEF k8 knopf {
+      opcode 8
+      text "8"
+      transl 0 -0.5 0
+    }
+
+    DEF k9 knopf {
+      opcode 9
+      text "9"
+      transl 2 -0.5 0
+    }
+
+    DEF k0 knopf {
+      opcode 0
+      text "0"
+      transl 4 -0.5 0
+    }
+
+    DEF k10 knopf {
+      opcode 10
+      text "+"
+      transl -4 -1.5 0
+    }
+
+    DEF k11 knopf {
+      opcode 11
+      text "-"
+      transl -2 -1.5 0
+    }
+
+    DEF k12 knopf {
+      opcode 12
+      text "*"
+      transl 0 -1.5 0
+    }
+
+    DEF k13 knopf {
+      opcode 13
+      text "/"
+      transl 2 -1.5 0
+    }
+
+    DEF k14 knopf {
+      opcode 14
+      text "="
+      transl 4 -1.5 0
+    }
+    ]
+    ROUTE k0.clicked TO scr1.w_clicked
+    #ROUTE k1.clicked TO scr1.w_clicked
+    #ROUTE k2.clicked TO scr1.w_clicked
+    #ROUTE k3.clicked TO scr1.w_clicked
+    #ROUTE k4.clicked TO scr1.w_clicked
+    #ROUTE k5.clicked TO scr1.w_clicked
+    ROUTE k6.clicked TO scr1.w_clicked
+    ROUTE k7.clicked TO scr1.w_clicked
+    ROUTE k8.clicked TO scr1.w_clicked
+    ROUTE k9.clicked TO scr1.w_clicked
+    ROUTE k10.clicked TO scr1.w_clicked
+    ROUTE k11.clicked TO scr1.w_clicked
+    ROUTE k12.clicked TO scr1.w_clicked
+    ROUTE k13.clicked TO scr1.w_clicked
+    ROUTE k14.clicked TO scr1.w_clicked
+    }
+    ####################### end of terminal ######################################
+   
+    ######################## rotBlauWürfel innen ##########################
+    DEF inCube Transform {
+      PROTO rotblau [
+        exposedField SFRotation rotation 0 0 0 0
+        field SFVec3f translation 0 0 0 
+      ]
+      { 
+        Transform {
+          rotation IS rotation
+          translation IS translation
+
+          children Shape {
+            geometry Box {
+              size 1000 1000 1
+            }
+            appearance Appearance {
+              texture ImageTexture {
+                url "rotblau.gif"
+              }
+            }
+          }
+        }
+      } # end of PROTO rotblau
+
+      scale 0 0 0
+      translation 0 0 0
+      children [
+    
+        # vorne
+        rotblau {
+          translation 0 0 -500
+          rotation 0 0 0 0
+        }
+
+        # rechts
+        rotblau {
+          translation 500 0 0
+          rotation 0 1 0 1.57
+        }
+
+        # links
+        rotblau {
+          translation -500 0 0
+          rotation 0 1 0 1.57
+        }
+
+        # hinten
+        rotblau {
+          translation 0 0 500
+          rotation 0 0 0 0
+        }
+
+        # oben
+        rotblau {
+          translation 0 500 0
+          rotation 1 0 0 1.57
+        }
+
+        # unten
+        rotblau {
+          translation 0 -500 0
+          rotation 1 0 0 1.57
+        }
+
+        DEF cubeTimer TimeSensor {
+          loop FALSE
+          cycleInterval 0.1
+          stopTime 0
+        }
+
+        DEF cubeScale PositionInterpolator {
+          key [ 0 1]
+          keyValue [0 0 0, 1 1 1]
+        }
+      ]
+    }
+    #################### ende von rotBlauWürfel innen ##############
+
+    #################### klokram ################################
+    DEF kloTimer TimeSensor {
+      cycleInterval 10
+      loop FALSE
+    }
+
+    DEF kloViewPolator PositionInterpolator {
+      # 21 keys
+      key [0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 
+           0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1 ]
+      keyValue [0 0 0,
+                0 0 1,
+                0 0 2,
+                0 0 8,
+                0 0 16,
+                0 0 31,
+                0 0 62,
+                0 0 124,
+                0 0 248,
+                0 0 498,
+                0 0 1000,
+                0 0 2000,
+                0 0 4000,
+                0 0 8000,
+                0 0 16000,
+                0 0 30000,
+                0 0 60000,
+                0 0 100000,
+                0 0 200000,
+                0 0 400000,
+                0 0 800000
+              ]
+    }
+
+    DEF kloViewPoint Viewpoint {
+      
+      #orientation 0 0 1 1
+      position 0 1 3
+    }
+      
+    DEF kloBack Background { 
+      frontUrl "toilet_centered.jpg"
+    }
+
+    Sound {  
+       minBack  0
+       minFront 0
+       maxBack  0
+       maxFront 999999
+       source DEF kloSound AudioClip {
+         loop FALSE
+         url "toilet.wav"
+       }
+       spatialize FALSE
+    }
+
+    DEF kloSoundTimer TimeSensor {
+      loop FALSE
+      #cycleInterval 7
+      stopTime 7
+      enabled FALSE
+    }
+
+    Transform {
+      translation 0 0 0
+      children DEF kloSoundActivator ProximitySensor {
+        enabled TRUE
+        size 1000 1000 1000
+      }
+    }
+    ####################### end of klokram ###############################
+
+  ]
+        
+  ########### ROUTE ######################
+
+  ROUTE k1.clickTime TO kerzTimer.startTime
+  ROUTE k2.clickTime TO kerzTimer2.startTime
+  ROUTE k5.clickTime TO kloTimer.startTime
+
+  ROUTE kloTimer.fraction_changed TO kloViewPolator.set_fraction
+  ROUTE kloViewPolator.value_changed TO kloViewPoint.position
+
+  ROUTE kloSoundActivator.exitTime TO kloSound.startTime
+  #ROUTE kloTimer.cycleTime TO kloSound.startTime
+  ROUTE k5.clickState TO kloBack.set_bind
+  #ROUTE k5.clickState TO kloSoundTimer.enabled
+  #ROUTE kloSoundTimer.stopTime TO kloSound.startTime
+}
+######################## end of Insel2 ###############################
+
+
+######################## Sonne und Mond ###############################
+DEF SonneUndMond Transform {
+  translation 0 0 0  
+  scale 0.8 0.8 0.8
+
+  children [
+
+    # Mond, leuchtend
+    DEF Luna Transform {
+      translation 0 500 0
+      children [
+        Shape {
+          appearance Appearance {
+            texture ImageTexture {
+              url "luna.jpg"
+              repeatS FALSE
+              repeatT FALSE
+            }
+          }
+          geometry Sphere {
+            radius 50
+          }
+        }
+        PointLight {
+          color 0.7 0.8 1
+          intensity 0.2
+          ambientIntensity 0.2
+          radius 5000
+        }
+      ]
+    }
+
+    # Sonne, leuchtend
+    DEF Sonne Transform {
+      translation 0 -500 0
+      children [
+        Shape {
+          appearance Appearance {
+            texture ImageTexture {
+              url "sun.jpg"
+              repeatS FALSE
+              repeatT FALSE
+            }
+          }
+          geometry Sphere {
+            radius 50
+          }
+        }
+        PointLight {
+          color 1.0 0.8 0.8
+          intensity 1.0
+          ambientIntensity 1.0
+          radius 50000
+        }
+      ]
+    }
+
+    DEF TIMER TimeSensor {
+      cycleInterval 100
+      loop TRUE
+    }
+
+
+    DEF polator OrientationInterpolator {
+      key [0, 0.25, 0.5, 0.75, 1]
+      keyValue [  1 0 0 0, 
+                  1 0 0 1.57,
+                  1 0 0 3.14,
+                  1 0 0 4.71,
+                  1 0 0 6.28 
+               ]
+    }
+
+        
+  ]
+
+  ROUTE TIMER.fraction_changed TO polator.set_fraction
+  ROUTE polator.value_changed TO SonneUndMond.rotation
+
+ # ROUTE scr1.scaleOut  TO cubeScale.set_fraction
+  ROUTE cubeScale.value_changed TO inCube.scale
+  ROUTE k4.clickTime TO cubeTimer.startTime
+  ROUTE cubeTimer.fraction_changed TO cubeScale.set_fraction
+}
+########################## Ende von Sonne und Mond ###############################
+
+
+        

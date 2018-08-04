@@ -1,0 +1,2778 @@
+#VRML V2.0 utf8
+
+
+DEF RealWorld Transform {
+
+  ########## proto pgdn
+  PROTO pgdn [
+    exposedField SFVec3f scale 0 0 0
+    exposedField SFVec3f translation 0 0 0
+    exposedField SFRotation rotation 0 0 0 0
+  ]
+  {
+    Transform {
+      translation IS translation
+      scale IS scale
+      rotation IS rotation
+  
+      children [
+        Shape {
+          geometry Box {
+            size 2 2 0.1
+          }
+          appearance Appearance {
+            texture ImageTexture {
+              url "pgdn.gif"
+            }
+          }
+        }
+      ]
+    }
+  }
+
+
+
+  children [
+  
+    # worldinfo
+    WorldInfo {
+	    title	"Real World"
+	    info ["(C) Till Zoppke, Robert Becker" "mein.zuhause@gmx.de"]
+	  }
+
+    
+    # navigationInfo
+    DEF navigation NavigationInfo {
+	    avatarSize 1.8
+	    headlight FALSE
+	    type "WALK"
+	    speed	0.4
+	    visibilityLimit 20
+    }
+
+    # background
+    Background{
+      frontUrl "seasky.jpg"
+      backUrl  "seasky.jpg"
+      topUrl   "nebula.jpg"
+      bottomUrl"sea_mirror.gif"
+      leftUrl  "seasky.jpg"
+      rightUrl "seasky.jpg"
+    } 
+
+
+    # initial Viewpoint is insel1start
+	
+
+    ############################ INSEL 1 #########################################
+    DEF insel1 Transform {
+      translation 0 0 38.5 # relative Lage zum Mittelpunkt der Welt
+
+
+	    children [
+
+	      DEF insel1Light DirectionalLight {
+		      color 0.4 0.4 0.4 
+		      ambientIntensity -8
+		      direction 1 0.5 1
+          on TRUE
+	      }
+
+        DEF insel1Proxy ProximitySensor {
+          size 100 50 100
+        }
+
+
+	    DEF Viewpoint Group {		
+			# Viewpoints
+		    children [
+
+			    DEF startView Viewpoint {
+				    position 5 1.8 12.5
+				    orientation	0 0 0 0
+				    fieldOfView	1.2
+				    description	"Startpunkt"
+        		}
+
+		  
+  			    DEF vogelView Viewpoint {
+				    position -5 1.8 -1
+				    orientation	0 0 0 0
+				    fieldOfView	1.2
+				    description	"Vogel"
+        		}
+      
+        		DEF hausView Viewpoint {
+				    position 5 1.8 -29
+				    orientation	0 5 0 2.5
+				    fieldOfView	1.2
+				    description	"hinterm Haus"
+			    }
+
+			    DEF oben Viewpoint {
+			      position 0 40 -5
+			      orientation 5 0 0 -1.5
+			      fieldOfView 1.2    #Weitwinkel
+			      description "oben"
+			    }
+	
+			
+		    ]
+	    }
+
+
+
+	    DEF Foggy Fog	{
+		    color 0.2 0.2 0.2
+		    fogType	"EXPONENTIAL"
+		    visibilityRange	10
+	    } 
+
+	    DEF	Schriften Transform	{
+			children [
+			 	    
+				DEF Welcome Transform {		# Welcome
+		    			translation	5 2 9
+		    			children [
+			    			DirectionalLight {
+				    			color 1 0.4 0.4 
+				    			ambientIntensity 1
+				    			direction 1 0.5 1
+			    			}
+			    			Shape {
+				    			appearance Appearance {
+					    			material DEF Font Material {
+						    			emissiveColor 1 1 1
+						    			ambientIntensity 1
+						    			diffuseColor 1 1 1
+						    			transparency 1
+					    			}
+				    			}
+				    			geometry Text {
+					    			string "Welcome to the Real World"
+					    			fontStyle FontStyle	{
+						    			size 0.5
+						    			style "BOLD"
+						    			family "TYPEWRITER"
+						    			justify	"MIDDLE"
+						    			}
+				    			}
+			
+			    			}
+
+							Transform { 
+								translation	0 -1 0
+								children Shape {
+				    			appearance Appearance {
+					    			material DEF AnfangFont Material {
+						    			emissiveColor 1 1 1
+						    			ambientIntensity 1
+						    			diffuseColor 1 1 1
+						    			transparency 1
+					    			}
+				    			}
+				    			geometry Text {
+					    			string "Finde den Weg durch den Wald"
+					    			fontStyle FontStyle	{
+						    			size 0.2
+						    			style "BOLD"
+						    			family "TYPEWRITER"
+						    			justify	"MIDDLE"
+						    			}
+				    			}
+			
+			    			}
+						}
+ 							Transform { 
+								translation	0 -1 0
+								children Shape {
+				    			appearance Appearance {
+					    			material DEF GruppeFont Material {
+						    			emissiveColor 1 1 1
+						    			ambientIntensity 1
+						    			diffuseColor 1 1 1
+						    			transparency 1
+					    			}
+				    			}
+				    			geometry Text {
+					    			string "[ Gruppe 17 -- Till Zoppke -- Robert Becker ]"
+					    			fontStyle FontStyle	{
+						    			size 0.2
+						    			style "BOLD"
+						    			family "TYPEWRITER"
+						    			justify	"MIDDLE"
+						    			}
+				    			}
+			
+			    			}
+						}
+
+			    			DEF	Sensor ProximitySensor	{
+				    			size 3 3 5
+				    			center 0 0 3
+			    			}
+
+
+			    			DEF FadeTimer TimeSensor
+			    			{
+			    			  cycleInterval 24.0
+			    			  loop FALSE
+			    			}
+
+
+
+			    			DEF	Fader ScalarInterpolator	{
+        		    			key [0, 0.066, 0.233, 0.333, 1]
+        		    			keyValue [ 1, 0, 0, 1, 1]
+      		    			}
+
+							DEF	AnfangFader ScalarInterpolator {
+								key	[0, 0.63, 0.7, 0.9, 1]
+								keyValue [1,1,0,0,1]
+							}
+
+							DEF	GruppeFader ScalarInterpolator {
+								key	[0, 0.233, 0.333, 0.6, 0.666, 1]
+								keyValue [1,1,0,0,1,1]
+							}
+
+
+
+		    			]
+		    			ROUTE Sensor.enterTime TO FadeTimer.startTime
+		    			ROUTE Sensor.exitTime TO FadeTimer.stopTime
+		    			ROUTE Sensor.isActive TO FadeTimer.enabled
+		    			ROUTE FadeTimer.fraction_changed TO Fader.set_fraction
+		    			ROUTE FadeTimer.fraction_changed TO	AnfangFader.set_fraction
+						ROUTE AnfangFader.value_changed	TO AnfangFont.transparency
+		    			ROUTE FadeTimer.fraction_changed TO	GruppeFader.set_fraction
+						ROUTE GruppeFader.value_changed	TO GruppeFont.transparency
+						ROUTE Fader.value_changed TO Font.transparency
+	    			}
+
+				DEF Vogeltext Transform {	# Vogel
+					translation	-4.5 2 -5	
+		    			children [
+			    			DirectionalLight {
+				    			color 1 0.4 0.4 
+				    			ambientIntensity 1
+				    			direction 1 0.5 1
+			    			}
+			    			Shape {
+				    			appearance Appearance {
+					    			material DEF VogelFont Material {
+						    			emissiveColor 1 1 1
+						    			ambientIntensity 1
+						    			diffuseColor 1 1 1
+						    			transparency 1
+					    			}
+				    			}
+				    			geometry Text {	 
+					    			string "Folge mir zum Knusperhäuschen"
+					    			fontStyle FontStyle	{
+						    			size 0.2
+						    			style "BOLD"
+						    			family "TYPEWRITER"
+						    			justify	"MIDDLE"
+						    			}
+				    			}
+			
+			    			}
+
+			    			DEF	VogelSensor TouchSensor	{ 
+			    			}
+
+
+			    			DEF VogelFadeTimer TimeSensor
+			    			{
+								enabled	FALSE
+			    				cycleInterval 8
+			    				loop TRUE
+			    			}
+
+
+
+			    			DEF	VogelFader ScalarInterpolator	{
+        		    			key [0, 0.2, 0.4, 0.8, 1]
+        		    			keyValue [ 1, 1, 0, 0, 1]
+      		    			}
+
+
+
+		    			]
+	    			}
+
+				DEF FrauText Transform {	# Frau
+					translation	2 3 -22.8
+		    			children [
+			    			DirectionalLight {
+				    			color 1 0.4 0.4 
+				    			ambientIntensity 1
+				    			direction 1 0.5 1
+			    			}
+			    			Shape {
+				    			appearance Appearance {
+					    			material DEF FrauFont Material {
+						    			emissiveColor 1 1 1
+						    			ambientIntensity 1
+						    			diffuseColor 1 1 1
+						    			transparency 1
+					    			}
+				    			}
+				    			geometry Text {	 
+					    			string "Finde den kleinen Baum hinter dem Haus"
+					    			fontStyle FontStyle	{
+						    			size 0.2
+						    			style "BOLD"
+						    			family "TYPEWRITER"
+						    			justify	"MIDDLE"
+						    			}
+				    			}
+			
+			    			}
+ 
+			    			DEF FrauFadeTimer TimeSensor
+			    			{
+								enabled	FALSE
+			    				cycleInterval 6
+			    				loop TRUE
+			    			}
+
+
+
+			    			DEF	FrauFader ScalarInterpolator	{
+        		    			key [0, 0.2, 0.4, 0.8, 1]
+        		    			keyValue [ 1, 1, 0, 0, 1]
+      		    			}
+
+
+
+		    			]
+
+
+	    			}
+
+				DEF BaumText Transform {	# Frau
+					translation	3 2 -25
+					rotation 0 1 0 3.14
+		    			children [
+			    			DirectionalLight {
+				    			color 1 0.4 0.4 
+				    			ambientIntensity 1
+				    			direction 1 0.5 1
+			    			}
+			    			Shape {
+				    			appearance Appearance {
+					    			material DEF BaumFont Material {
+						    			emissiveColor 1 1 1
+						    			ambientIntensity 1
+						    			diffuseColor 1 1 1
+						    			transparency 1
+					    			}
+				    			}
+				    			geometry Text {	 
+					    			string "Fahre mit dem Auto zur nächsten Insel"
+					    			fontStyle FontStyle	{
+						    			size 0.2
+						    			style "BOLD"
+						    			family "TYPEWRITER"
+						    			justify	"MIDDLE"
+						    			}
+				    			}
+			
+			    			}
+ 
+			    			DEF BaumFadeTimer TimeSensor
+			    			{
+								enabled	FALSE
+			    				cycleInterval 8
+			    				loop TRUE
+			    			}
+
+
+
+			    			DEF	BaumFader ScalarInterpolator	{
+        		    			key [0, 0.2, 0.4, 0.8, 1]
+        		    			keyValue [ 1, 1, 0, 0, 1]
+      		    			}
+
+
+
+		    			]
+
+
+	    			}
+
+
+			]
+		}
+  
+
+       
+	    DEF unsichtbareEbene Transform {
+        
+		    translation	0 0 0
+		    children Shape {
+			    appearance Appearance {
+				    material Material {
+					    diffuseColor 1 0 0
+              transparency 1 # Hallo Robert, ist es nicht schöner ohne Kiste?
+				    }
+			    }
+			    geometry Box {size 100 0.1 100}
+		    }
+	    }
+
+
+
+	    # Grund und Boden
+	    DEF Hauptland Transform {
+	      translation 5 0 -10
+	      children Shape { 
+    	    appearance Appearance {
+    	      material Material {
+			      diffuseColor  0.5 0.6 0.2
+			      emissiveColor	-0.3 -0.3 -0.3
+			     # transparency 0.1
+			     # specularColor	0.3 0.3 0.3
+			     # shininess	-7
+	  
+	  
+		      } 
+    	    }
+    	    geometry Box {size 23 0.1 43} 
+	      }
+	    } 
+
+
+	DEF ProtoBaum Transform {		# PROTO BAUM
+		PROTO BAUM [
+	      field SFColor farbe 0.4 0.8 0.3    
+	      field SFVec3f hoehe 1 1 1
+		    field SFFloat krone 2  
+	      exposedField SFVec3f translation 0 0 0
+	      exposedField SFRotation rotation 0 0 0 0
+	    ]
+ 
+	    { # PROTO BAUM
+	    Transform {
+    	    scale IS hoehe
+    	    translation IS translation
+    	    children [
+	    #		DirectionalLight {
+	    #			color 0 0 0
+	    #			ambientIntensity 0.5
+	    #			direction 0.1 0.1 0.1
+	    #		}
+
+			    Transform {  # Zylinder
+				    translation 0 2.5 0
+				    children Shape {
+		    	    appearance Appearance {
+			    	    material Material {
+            			    diffuseColor 0.5 0.4 0.3	
+					      }
+				      }
+        	    geometry Cylinder {
+        		    radius 0.3
+				    height 5
+		    	    }
+    		    } 	 
+			    }
+              
+			    Transform {	# Kegel 
+    	      translation 0 6 0
+        	    children Shape { 
+        	      appearance Appearance {
+						     material Material {
+            				    diffuseColor IS farbe 
+							    emissiveColor -0.2 -0.2 -0.2			
+            	    }
+        	      }
+        	      geometry Cone {
+            	    bottomRadius IS krone 
+        	      }
+		    	    }
+    	      }
+    	    ]
+	      }
+	    }
+    
+	}
+  
+  	  
+	    DEF Faellt Transform {
+
+
+		    children [
+
+
+
+
+		    # Haus
+  		    DEF Haus Transform {
+	      translation 2 0 -25
+	      children [
+  
+    	    # 4 Wände
+    	    Transform { 
+    	      translation 0 2 0
+    	      children Shape {
+        	    appearance Appearance { 
+        	      texture ImageTexture { 
+            	    url "ziegel1.jpg"
+            	    repeatS FALSE  
+            	    repeatT FALSE 
+        	      }        
+        	    }     
+        	    geometry Box { 
+        	      size 4 4 4 	 
+        	    }
+    	      } 
+    	    }
+
+
+			# Schornstein
+			Transform {
+			 translation 0.5 5.5 -0.6
+			 children Shape	{
+				 appearance	Appearance {
+					 material Material {
+						 diffuseColor 0.8 0.8 0.8
+					 }
+				 }
+				 geometry Box {
+					 size 0.5 1.5 0.5
+				 }
+			 }
+
+			}
+
+			# Rauch
+			DEF Rauch Transform {
+				translation 0.5 5.5 -0.6
+				scale 0.1 0.1 0.1
+				children [
+					Billboard {
+						children Shape {
+							appearance Appearance {
+								texture	ImageTexture {
+									url	"cloud.gif"
+								}
+							}
+							geometry Box {
+								size 1 0.5 0.0001
+							}
+
+						}
+					}
+					DEF	RauchTime TimeSensor {
+						cycleInterval 5
+						loop TRUE
+					}
+
+					DEF	RauchPos PositionInterpolator {
+						key	[0, 1]
+						keyValue [0.5 5.5 -0.6, 0.5 8 -0.6]
+					}
+
+					DEF	RauchBox  PositionInterpolator {
+						key	[0, 1]
+						keyValue [0.1 0.1 0.1,  1.5 1.5 0.3]
+					}
+
+
+
+
+				]
+			}
+
+
+    	    #  Dach
+    	    Transform {
+    	      translation 0 4 0
+    	      children Shape {
+        	    appearance Appearance {
+        	      texture ImageTexture { 
+            	    url "ziegel-dach.jpg"
+            	    repeatS FALSE  
+            	    repeatT FALSE 
+        	      }
+        	    }
+        	    geometry IndexedFaceSet {
+        	      colorPerVertex FALSE
+        	      coord Coordinate {
+            	    point [
+		        	      -2,  0, -2 
+            	      2,  0, -2
+            	      -2,  0,  2
+            	      2,  0,  2
+            	      0,  3, -3
+            	    ]
+        	      }
+        	      coordIndex [	
+            	    4, 1, 0, -1,
+            	    4, 3, 1, -1,
+            	    4, 2, 3, -1,
+            	    4, 0, 2, -1,
+        	      ]
+        	    }
+    	      }
+    	    }
+
+    	    # Fenster mit Person 12
+    	    Transform {
+    	      translation -0.8 2 2
+    	      children 
+		      [
+		
+	    #    	PointLight {
+	    #        	color 1 1 1
+	    #        	intensity 1
+	    #        	ambientIntensity 10
+	    #        	location 0 0 -0.2
+	    #        	radius 5
+	    #        	attenuation 0 1 0
+	    #    	}
+			     Transform {
+				      translation 0 0 0
+				      children LOD { 
+						  
+						  range	[10, 20]
+						  level	[
+							  Shape	 { 
+        						 appearance Appearance {	   
+        					    	texture ImageTexture { 
+      	    			    			url "Person12.jpg"
+      	    			    			repeatS FALSE  
+      	    			    			repeatT FALSE 
+        				    			}
+	    			    			}
+        			    			geometry Box {size 1.8 1.8 0.01} 
+    			    			}
+							  Shape	 { 
+        						 appearance Appearance {	   
+        					    	texture ImageTexture { 
+      	    			    			url "Person10.jpg"
+      	    			    			repeatS FALSE  
+      	    			    			repeatT FALSE 
+        				    			}
+	    			    			}
+        			    			geometry Box {size 1.8 1.8 0.01} 
+    			    			}
+							  Shape	 { 
+        						 appearance Appearance {	   
+        					    	texture ImageTexture { 
+      	    			    			url "Person11.jpg"
+      	    			    			repeatS FALSE  
+      	    			    			repeatT FALSE 
+        				    			}
+	    			    			}
+        			    			geometry Box {size 1.8 1.8 0.01} 
+    			    			}
+							]
+						}
+				
+			    }
+    		    DEF FensterTouch TouchSensor {}
+	
+			    Sound {  
+			       intensity 1
+    		       minBack  0
+    		       minFront 0
+    		       maxBack  10
+    		       maxFront 10
+    		       source DEF Sound AudioClip {
+        		     loop FALSE
+        		     url "aldi.wav"
+    		       }
+    		       spatialize FALSE
+    		    }
+
+			    ]
+			    ROUTE FensterTouch.touchTime TO	Sound.startTime
+				ROUTE FensterTouch.touchTime TO	FrauFadeTimer.startTime
+				ROUTE Sound.isActive TO	FrauFadeTimer.enabled
+				ROUTE FrauFadeTimer.fraction_changed TO	FrauFader.set_fraction
+				ROUTE FrauFader.value_changed TO FrauFont.transparency
+    	    }	 
+
+    	    # Tür
+    	    Transform {
+    	     translation 1 1.25 2
+    	     children Shape { 
+        	    appearance Appearance {
+	    	      material Material {
+				      diffuseColor 1 1 1
+				      transparency 0.5
+			      } 
+        	    }
+        	    geometry Box {size 1 2.5 0.1} 
+    	      }
+
+    	    }
+		    Transform	{
+		      translation	0.6 1.25 2
+		      children Shape {
+			      appearance Appearance	{
+				      material Material	{
+					      diffuseColor 1 1 1
+				      }
+			      }
+			      geometry Box {size 0.2 0.1 0.1}
+		      }
+	      }
+
+	      ]
+		    }# end of Haus
+
+
+
+		    #Wald
+		    DEF Wald Transform {
+	      children [
+
+	    DEF Baum BAUM { 
+	      farbe 0.4 0.8 0.3
+	      krone 2 
+	      hoehe 1 1 1
+	      translation 6 0 6
+	      rotation 0 0 0 0
+	    }   # end of Baum
+
+
+	    BAUM {
+		    translation	16.1 0 11
+    	    hoehe 1 0.6 0.9
+	    }
+
+	    BAUM {
+		    translation	13 0 10
+	    }
+
+	    BAUM {
+		    translation	10 0 9
+	    }
+
+	    BAUM {
+		    translation	16 0 8.2
+    	    hoehe 0.4 0.6 1
+	    }
+
+	    BAUM {
+		    translation	13 0 7
+	    }
+
+	    #BAUM {
+	    #	translation	10 0 6
+	    #}
+
+	    BAUM {
+		    translation	16 0 5.1
+    	    hoehe 1 0.7 0.6
+	    }
+
+	    #BAUM {
+	    #	translation	13 0 4
+	    #}
+
+	    BAUM {
+		    translation	11 0 3
+	    }
+
+	    BAUM {
+		    translation	16.2 0 2.1
+    	    hoehe 0.3 0.6 0.4
+	    }
+
+	    #BAUM {
+	    #	translation	13 0 1
+	    #}
+
+	    #BAUM {
+	    #	translation	10 0 0
+	    #}
+
+	    #BAUM {
+	    #	translation	10 0 -12
+	    #}
+
+	    BAUM {
+		    translation	13 0 -11
+	    }
+
+	    BAUM {
+		    translation	16.1 0 -9.9
+    	    hoehe 0.8 0.7 1
+	    }
+
+	    BAUM {
+		    translation	10 0 -9
+	    }
+
+	    BAUM {
+		    translation	13 0 -8
+	    }
+
+	    BAUM {
+		    translation	16 0 -7.1
+    	    hoehe 0.5 0.8 0.7
+	    }
+
+	    #BAUM {
+	    #	translation	10 0 -6
+	    #}
+
+	    #BAUM {
+	    #	translation	13 0 -5
+	    #}
+
+	    BAUM {
+		    translation	16 0 -3.9
+    	    hoehe 0.7 1 0.9
+	    }
+
+	    BAUM {
+		    translation	10 0 -3
+	    }
+
+	    #BAUM {
+	    #	translation	13 0 -2
+	    #}
+
+	    BAUM {
+		    translation	16.1 0 -1.1
+    	    hoehe 1 0.7 0.7
+	    }
+
+	    BAUM {
+		    translation	10 0 -20
+	    }
+
+	    BAUM {
+		    translation	13 0 -19
+	    }
+
+	    BAUM {
+		    translation	16.1 0 -18.1
+    	    hoehe 0.5 0.9 0.6
+	    }
+
+	    BAUM {
+		    translation	10 0 -17
+	    }
+
+	    BAUM {
+		    translation	13 0 -16
+	    }
+
+	    BAUM {
+		    translation	16 0 -15.2
+    	    hoehe 0.6 0.7 0.8
+	    }
+
+	    #BAUM {
+	    #	translation	10 0 -14
+	    #}
+
+	    BAUM {
+		    translation	13 0 -13
+	    }
+
+	    BAUM {
+		    translation	16.1 0 -12.1
+    	    hoehe 0.5 0.7 0.8
+	    }
+
+
+
+
+
+	    BAUM {
+		    translation	-6.1 0 11
+    	    hoehe 1 0.7 1
+	    }
+
+	    BAUM {
+		    translation	-3 0 10
+	    }
+
+	    BAUM {
+		    translation	0 0 9
+	    }
+
+	    BAUM {
+		    translation	-6 0 8.1
+    	    hoehe 0.5 0.8 0.9
+	    }
+
+	    BAUM {
+		    translation	-3 0 7
+	    }
+
+	    BAUM {
+		    translation	0 0 6
+	    }
+
+	    BAUM {
+		    translation	-5.9 0 5.2
+    	    hoehe 0.8 0.6 0.7
+	    }
+
+	    BAUM {
+		    translation	-3 0 4
+	    }
+
+	    BAUM {
+		    translation	0 0 3
+	    }
+
+	    BAUM {
+		    translation	-6.1 0 2.1
+    	    hoehe 0.5 0.7 0.6
+	    }
+
+	    #BAUM {
+	    #	translation	-3 0 1
+	    #}
+
+	    #BAUM {
+	    #	translation	0 0 0
+	    #}
+
+	    BAUM {
+		    translation	0 0 -12
+	    }
+
+	    BAUM {
+		    translation	-3 0 -11
+	    }
+
+	    BAUM {
+		    translation	-6.1 0 -10.3
+    	    hoehe 0.9 0.4 0.7
+	    }
+
+	    #BAUM {
+	    #	translation	0 0 -9
+	    #}
+
+	    #BAUM {
+	    #	translation	-3 0 -8
+	    #}
+
+	    BAUM {
+		    translation	-6.2 0 -7.1
+    	    hoehe 0.6 0.7 0.8
+	    }
+
+	    BAUM {
+		    translation	0 0 -6
+	    }
+
+	    #BAUM {
+	    #	translation	-3 0 -5
+	    #}
+
+	    BAUM {
+		    translation	-6 0 -4.2
+    	    hoehe 0.7 0.8 0.4
+	    }
+
+	    BAUM {
+		    translation	0 0 -3
+	    }
+
+	    #BAUM {
+	    #	translation	-3 0 -2
+	    #}
+
+	    BAUM {
+		    translation	-6.1 0 -1.1
+    	    hoehe 1 1 1
+	    }
+
+	    BAUM {
+		    translation	0 0 -20
+	    }
+
+	    BAUM {
+		    translation	-3 0 -19
+	    }
+
+	    BAUM {
+		    translation	-5.9 0 -18.3
+    	    hoehe 0.5 0.8 0.4
+	    }
+
+	    BAUM {
+		    translation	0 0 -17
+	    }
+
+	    BAUM {
+		    translation	-3 0 -16
+	    }
+
+	    BAUM {
+		    translation	-6.2 0 -15.2
+    	    hoehe 0.1 0.5 0.6
+	    }
+
+	    BAUM {
+		    translation	0 0 -14
+	    }
+
+	    BAUM {
+		    translation	-3 0 -13
+	    }
+
+	    BAUM {
+		    translation	-6.1 0 -12.1
+    	    hoehe 0.4 0.4 0.5
+	    }
+
+
+
+
+
+	    BAUM {
+		    translation	7.5 0 11
+	    }
+
+	    #BAUM {
+	    #	translation	4.5 0 10
+	    #}
+
+	    #BAUM {
+	    #	translation	6 0 9
+	    #}
+
+	    BAUM {
+		    translation	3 0 8
+	    }
+
+	    #BAUM {
+	    #	translation	7.5 0 7
+	    #}
+
+	    BAUM {
+		    translation	4.5 0 6
+	    }
+
+	    BAUM {
+		    translation	6 0 5
+	    }
+
+	    BAUM {
+		    translation	3 0 4
+	    }
+
+	    #BAUM {
+	    #	translation	7.5 0 3
+	    #}
+
+	    BAUM {
+		    translation	4.5 0 2
+	    }
+
+	    BAUM {
+		    translation	6 0 1
+	    }
+
+	    #BAUM {
+	    #	translation	3 0 0
+	    #}
+
+	    BAUM {
+		    translation	3 0 -12
+	    }
+
+	    #BAUM {
+	    #	translation	6 0 -11
+	    #}
+
+	    #BAUM {
+	    #	translation	4.5 0 -10
+	    #}
+
+	    BAUM {
+		    translation	7.5 0 -8
+	    }
+
+	    BAUM {
+		    translation	3 0 -8
+	    }
+
+	    BAUM {
+		    translation	6 0 -7
+	    }
+
+	    BAUM {
+		    translation	4.5 0 -6
+	    }
+
+	    #BAUM {
+	    #	translation	7.5 0 -5
+	    #}
+
+	    BAUM {
+		    translation	3 0 -4
+	    }
+
+	    #BAUM {
+	    #	translation	6 0 -3
+	    #}
+
+	    #BAUM {
+	    #	translation	4.5 0 -2
+	    #}
+
+	    BAUM {
+		    translation	7.5 0 -1
+	    }
+
+	    #BAUM {
+	    #	translation	3 0 -20
+	    #}
+
+	    BAUM {
+		    translation	7.5 0 -19.5
+	    }
+
+	    #BAUM {
+	    #	translation	4.5 0 -18
+	    #}
+
+	    #BAUM {
+	    #	translation	7.5 0 -17
+	    #}
+
+	    BAUM {
+		    translation	3 0 -16
+	    }
+
+	    BAUM {
+		    translation	6 0 -15
+	    }
+
+	    BAUM {
+		    translation	4.5 0 -14
+	    }
+
+	    BAUM {
+		    translation	7.5 0 -13
+	    }
+
+	    BAUM {
+		    translation	3 0 -12
+	    }
+
+
+	    BAUM {
+		    translation	3 0 -16
+	    }
+
+
+
+	    BAUM {
+		    translation	-5 0 -21
+	    }
+
+	    BAUM {
+		    translation	-2 0 -23
+	    }
+
+	    BAUM {
+		    translation	-5 0 -26
+	    }
+
+	    BAUM {
+		    translation	-2 0 -28
+	    }
+
+
+
+	    BAUM {
+		    translation	-6 0 -30
+	    }
+
+
+	    BAUM {
+		    translation	5 0 -26
+	    }
+
+	    BAUM {
+		    translation	9 0 -28
+	    }
+
+
+	    BAUM {
+		    translation	12 0 -22
+	    }
+
+	    BAUM {
+		    translation	15 0 -24
+	    }
+
+	    BAUM {
+		    translation	13 0 -28
+	    }
+
+	    BAUM {
+		    translation	11 0 -30
+	    }
+
+	    BAUM {
+		    translation	16 0 -27
+	    }
+
+
+	    BAUM {
+		    translation	8 0 -31
+	    }
+
+	    BAUM {
+		    translation	5 0 -31
+	    }
+
+	    BAUM {
+		    translation	2 0 -31
+	    }
+
+	    BAUM {
+		    translation	-1 0 -31
+	    }
+
+	    BAUM {
+		    translation	-4 0 -31
+	    }
+
+
+
+
+	    BAUM {
+	       translation 2 0 2
+	       hoehe 0.1 0.1 0.1
+	    }
+
+	    BAUM {
+	       translation 4 0 3
+	       hoehe 0.2 0.2 0.2
+	    }
+
+	    BAUM {
+	       translation 7 0 1
+	       hoehe 0.3 0.3 0.3
+	    }
+
+	    BAUM {
+	       translation 1 0 6
+	       hoehe 0.4 0.4 0.4
+	    }
+
+	    BAUM {
+	       translation 10 0 5
+	       hoehe 1 0.5 0.5
+	    }
+
+	    BAUM {
+	       translation -4 0 5
+	       hoehe 0.6 0.6 0.6
+
+	    }
+
+	    BAUM {
+	       translation -1 0 -5
+	       hoehe 0.7 0.7 0.7
+	       krone 4
+	    }
+
+	    BAUM {
+	       translation -6 0 -2
+	       hoehe 0.8 0.8 0.8
+	       farbe 0.4 0.8 0.3
+	    }
+
+	    BAUM {
+	       translation 4 0 4
+	       hoehe 0.4 0.9 0.9
+	    }
+
+	    BAUM {
+	       translation -1 0 -1
+	       hoehe 0.1 0.1 0.1
+	    }
+	    ##
+	    BAUM {
+	       translation 2.5 0 2
+	       hoehe 0.3 0.4 0.1
+	    }
+
+	    BAUM {
+	       translation 4.5 0 3
+	       hoehe 0.2 0.7 0.6
+	    }
+
+	    BAUM {
+	       translation 7.5 0 1
+	       hoehe 0.5 0.6 0.4
+	    }
+
+	    BAUM {
+	       translation 1.5 0 6
+	       hoehe 0.4 0.8 0.5
+	    }
+
+	    BAUM {
+	       translation 10.5 0 5
+	       hoehe 0.5 0.4 0.3
+	    }
+
+	    BAUM {
+	       translation -4.5 0 5
+	       hoehe 0.5 0.3 0.2
+
+	    }
+
+	    BAUM {
+	       translation -1.5 0 -5
+	       hoehe 0.5 1.1 0.8
+	       krone 4
+	    }
+
+	    BAUM {
+	       translation 6.5 0 -2
+	       hoehe 0.3 0.6 0.4
+
+	    }
+
+	    BAUM {
+	       translation 4.5 0 4
+	       hoehe 0.2 0.4 0.5
+	    }
+
+	    BAUM {
+	       translation -1.5 0 -1
+	       hoehe 0.7 0.9 0.5
+	    }
+	    ####
+	    BAUM {
+	       translation 2 0 2
+	       hoehe 0.1 0.1 0.1
+	    }
+
+	    BAUM {
+	       translation 4 0 3
+	       hoehe 0.2 0.2 0.2
+	    }
+
+	    BAUM {
+	       translation 7 0 1
+	       hoehe 0.3 0.3 0.3
+	    }
+
+	    BAUM {
+	       translation 1 0 6
+	       hoehe 0.4 0.4 0.4
+	    }
+
+	    BAUM {
+	       translation 10 0 5
+	       hoehe 1 0.5 0.5
+	    }
+
+	    BAUM {
+	       translation -4 0 5
+	       hoehe 0.6 0.6 0.6
+
+	    }
+
+	    BAUM {
+	       translation -1 0 -5
+	       hoehe 0.7 0.7 0.7
+	       krone 4
+	    }
+
+	    BAUM {
+	       translation -6 0 -2
+	       hoehe 0.8 0.8 0.8
+	       farbe 0.4 0.8 0.3
+	    }
+
+	    BAUM {
+	       translation 4 0 4
+	       hoehe 0.4 0.9 0.9
+	    }
+
+	    BAUM {
+	       translation -1 0 -1
+	       hoehe 0.1 0.1 0.1
+	    }
+	    ##
+	    BAUM {
+	       translation 2.5 0 2
+	       hoehe 0.3 0.4 0.1
+	    }
+
+	    BAUM {
+	       translation 4.5 0 3
+	       hoehe 0.2 0.7 0.6
+	    }
+
+	    BAUM {
+	       translation 7.5 0 1
+	       hoehe 0.5 0.6 0.4
+	    }
+
+	    BAUM {
+	       translation 1.5 0 6
+	       hoehe 0.4 0.8 0.5
+	    }
+
+	    BAUM {
+	       translation 10.5 0 5
+	       hoehe 0.5 0.4 0.3
+	    }
+
+	    BAUM {
+	       translation -4.5 0 5
+	       hoehe 0.5 0.3 0.2
+
+	    }
+
+	    BAUM {
+	       translation -1.5 0 -5
+	       hoehe 0.5 1.1 0.8
+	       krone 4
+	    }
+
+	    BAUM {
+	       translation 6.5 0 -2
+	       hoehe 0.3 0.6 0.4
+
+	    }
+
+	    BAUM {
+	       translation 4.5 0 4
+	       hoehe 0.2 0.4 0.5
+	    }
+
+	    BAUM {
+	       translation -1.5 0 -1
+	       hoehe 0.7 0.9 0.5
+	    }
+
+	    BAUM {
+	       translation 8 0 -7
+	       hoehe 0.6 0.5 1
+	    } 
+
+
+	    ]
+		    } # end of Wald
+
+
+		    # Baum, der alles zum sinken bringt
+		    DEF FallBaum Transform {
+		      rotation 0 0 0 0
+			  
+			
+		      children [
+
+			      BAUM { translation	2 0 -27.3
+				    	     hoehe 0.1 0.1 0.1
+				    	 }
+    		   
+    		    DEF BaumTimer TimeSensor {
+	    		    cycleInterval 8
+	    		    loop  FALSE
+    		    }
+
+    		    DEF BaumFallen OrientationInterpolator {
+	    		    key	      [0  , 1]
+	    		    keyValue  [ 0 0 0 0 ,  -1 1 1 3.14 ]
+    		    }
+
+			      DEF BaumTouch TouchSensor {}
+	 
+		      ]
+
+
+		      
+		    }
+
+		    ]
+
+	    }
+
+
+		DEF Vogel Transform {			 #Vogel
+	    	translation	-4.5 0.5 -5
+			scale 0.5 0.5 0.5
+	    	rotation 0 1 0.2 3
+	    	children [
+	    		Transform {
+	    			children Shape {
+	    				appearance Appearance {
+	    					material Material {diffuseColor	0.6 0.5 0.3}
+	    					}
+	    				geometry Sphere	{
+	    				radius 0.5
+	    				}  # Kopf
+
+	    			}
+	    		}
+	    		Transform {
+	    			translation	0 -0.2 -0.5
+	    			children Shape {
+	    				appearance Appearance {
+	    					material Material {diffuseColor	0.6 0.5 0.3}
+	    				}
+	    				geometry Sphere	{
+	    					radius 0.7
+	    				}  # Körper
+	    			}
+	    		}
+	    		DEF Rfl Transform {	  #Rechter Flügel
+	    			translation	0 -0.2 -0.5
+	    			rotation 0 0 0.5 -0.5
+	    			children Shape {
+	    				appearance	Appearance {
+	    					material Material {diffuseColor	0.6 0 0}
+	    				}
+	    				geometry	IndexedFaceSet {
+	    					colorPerVertex FALSE
+	    					coord Coordinate {
+	    						point [
+	    							0, 0.2, -0.6
+	    							0, 0.2, 0.7
+	    							0, -0.2, -0.6
+	    							0, -0.2, 0.7
+	    							-1.8, 0, -0.4
+	    						]
+	    					}
+	    					coordIndex [
+	    						4, 1, 0, -1,
+	    						4, 0, 2, -1,
+	    						4, 2, 3, -1,
+	    						4, 3, 1, -1,
+	    						4, 0, 1, -1,
+	    						4, 2, 0, -1,
+	    						4, 3, 2, -1,
+	    						4, 1, 3, -1,
+	    						1, 0, 2, 3
+	    					]
+	    				}
+							
+	    			}
+	    		}
+
+	    		DEF Lfl Transform {	  #Linker Flügel
+	    			translation	0 -0.2 -0.5
+	    			rotation 0 0 0.5 0.5
+	    			children Shape {
+	    				appearance	Appearance {
+	    					material Material {diffuseColor	0.6 0 0}
+	    				}
+	    				geometry	IndexedFaceSet {
+	    					colorPerVertex FALSE
+	    					coord Coordinate {
+	    						point [
+	    							0, 0.2, -0.6
+	    							0, 0.2, 0.7
+	    							0, -0.2, -0.6
+	    							0, -0.2, 0.7
+	    							1.8, 0, -0.4
+	    						]
+	    					}
+	    					coordIndex [
+	    						4, 1, 0, -1,
+	    						4, 0, 2, -1,
+	    						4, 2, 3, -1,
+	    						4, 3, 1, -1,
+	    						4, 0, 1, -1,
+	    						4, 2, 0, -1,
+	    						4, 3, 2, -1,
+	    						4, 1, 3, -1,
+	    						1, 0, 2, 3
+	    					]
+	    				}
+							
+	    			}
+	    		}
+	    		Transform {  #Schwanz
+	    			translation	0 -0.2 -0.8
+	    			children Shape {
+	    				appearance Appearance {
+	    					material Material {diffuseColor	0.6 0.5 0.3}
+	    				}
+	    				geometry IndexedFaceSet	{
+	    					colorPerVertex FALSE
+	    					coord Coordinate {
+	    						point [
+	    							-0.2, 0.2, -0.8
+	    							0.2, 0.2, -0.8
+	    							0.2, -0.2, -0.8
+	    							-0.2, -0.2, -0.8
+	    							0, 0, 0
+	    						]
+	    					}
+	    					coordIndex [
+	    						4, 0, 1, -1,
+	    						4, 1, 2, -1,
+	    						4, 2, 3, -1,
+	    						4, 3, 0, -1,
+	    						4, 0, 3, -1,
+	    						4, 3, 2, -1,
+	    						4, 1, 0, -1,
+	    						4, 2, 1, -1,
+	    						0, 1, 2, 3
+	    					]
+	    				}
+	    			}
+	    		}
+
+
+		    	Sound {  
+			       intensity 5
+    		       minBack  2
+    		       minFront 2
+    		       maxBack  10
+    		       maxFront 10
+    		       source DEF VogelSound AudioClip {
+					
+        		     loop FALSE
+        		     url "birdies.wav"
+    		       }
+    		       spatialize FALSE
+    		    }
+
+	    		DEF Timer TimeSensor
+	    		{
+	    		   cycleInterval 2.0
+	    		   loop TRUE
+	    		   stopTime 1
+	    		}
+
+	    		DEF	Timer2 TimeSensor
+	    		{
+	    		   cycleInterval 2.0
+	    		   loop TRUE
+	    		   stopTime 1
+
+	    		}
+
+	    		DEF	Timer3 TimeSensor
+	    		{
+	    		   cycleInterval 8.0
+	    		   loop FALSE
+	    		}
+
+	    		DEF	Timer4 TimeSensor
+	    		{
+	    		   cycleInterval 10.0
+	    		   loop FALSE
+	    		   stopTime 1
+
+	    		}
+
+	    		DEF Beweger OrientationInterpolator
+	    		{
+	    		   key		[0.0, 0.5, 1.0]
+	    		   keyValue [0 0 0.5 0.5, 0 0 0.5 -0.6, 0 0 .5 0.5]
+	    		}
+
+
+
+	    		DEF	Beweger2 OrientationInterpolator
+	    		{
+	    			key	[0.0, 0.5,  1.0]
+	    			keyValue [0 0 0.5 -0.5, 0 0 0.5 0.6, 0 0 .5 -0.5]
+	    		}
+
+	    		DEF	Beweger3 PositionInterpolator
+	    		{
+	    			key	[0.0, 0.2, 0.4,  1.0]
+	    			keyValue [	-4.5 0.5 -5, -4.5 0.5 -5, -4 8.5 -12, 5 6.5 -25]
+
+	    		}
+
+	    		DEF	Beweger4 OrientationInterpolator
+	    		{
+	    			key	[0.0,  0.5,  1.0]
+	    			keyValue [ 0 1 0.2 3, 0 1 0.2 2.5, 0 1 0.2 6.2]
+	    		}
+				
+
+	    		DEF VogelTouch TouchSensor {}
+	    
+
+
+
+
+	    	]
+
+
+	    }
+
+
+
+ 
+    ]
+
+    }
+    ###################### end of Insel 1 ###########################################
+
+    ############################# Straße und Auto ################################
+    DEF Starway Transform {
+      translation -8.5 0 0 # relative Lage zum Mittelpunkt der Welt
+
+      
+      children [
+
+	      DEF Strasse Group {
+
+          # proto Fahrbahnmarkierung
+          PROTO Streifen [
+            field SFVec3f translation 0 0 0
+          ]
+          {
+            Transform {
+              translation IS translation
+              children Shape {
+    	          appearance Appearance {
+    	            material Material {diffuseColor 1 1 1}
+    	          }
+    	          geometry Box {size 0.1 0.12 1}
+              }
+	          }
+          }
+
+          children [  
+          
+            # asphalt
+            Shape {
+    	        appearance Appearance {
+    	          material Material {diffuseColor 0.1 0.1 0.1}
+    	        }
+    	        geometry Box {size 4 0.1 100}
+	          }
+
+	          # Fahrbahnmarkierungen
+            Streifen { translation 0 0 2}
+            Streifen { translation 0 0 4}
+            Streifen { translation 0 0 6}
+            Streifen { translation 0 0 8}
+            Streifen { translation 0 0 10}
+            Streifen { translation 0 0 12}
+            Streifen { translation 0 0 14}
+            Streifen { translation 0 0 16}
+            Streifen { translation 0 0 18}
+            Streifen { translation 0 0 20}
+            Streifen { translation 0 0 22}
+            Streifen { translation 0 0 24}
+            Streifen { translation 0 0 26}
+            Streifen { translation 0 0 28}
+            Streifen { translation 0 0 30}
+            Streifen { translation 0 0 32}
+            Streifen { translation 0 0 34}
+            Streifen { translation 0 0 36}
+            Streifen { translation 0 0 38}
+            Streifen { translation 0 0 40}
+            Streifen { translation 0 0 42}
+            Streifen { translation 0 0 44}
+            Streifen { translation 0 0 46}
+            Streifen { translation 0 0 48}
+            Streifen { translation 0 0 0}
+            Streifen { translation 0 0 -2}
+            Streifen { translation 0 0 -4}
+            Streifen { translation 0 0 -6}
+            Streifen { translation 0 0 -8}
+            Streifen { translation 0 0 -10}
+            Streifen { translation 0 0 -12}
+            Streifen { translation 0 0 -14}
+            Streifen { translation 0 0 -16}
+            Streifen { translation 0 0 -18}
+            Streifen { translation 0 0 -20}
+            Streifen { translation 0 0 -22}
+            Streifen { translation 0 0 -24}
+            Streifen { translation 0 0 -26}
+            Streifen { translation 0 0 -28}
+            Streifen { translation 0 0 -30}
+            Streifen { translation 0 0 -32}
+            Streifen { translation 0 0 -34}
+            Streifen { translation 0 0 -36}
+            Streifen { translation 0 0 -38}
+            Streifen { translation 0 0 -40}
+            Streifen { translation 0 0 -42}
+            Streifen { translation 0 0 -44}
+            Streifen { translation 0 0 -46}
+            Streifen { translation 0 0 -48}
+
+            # Auto am Ende mit bush und girls
+            Transform {
+              translation 0 0. -50.7
+              children [
+                # Auto
+                Transform {
+                  translation 0 1 0.5
+                  children Shape {
+                    geometry Box {
+                      size 3 3.5 0.01
+                    }
+                    appearance Appearance {
+                      texture ImageTexture {
+                        url "car_back.gif"
+                      }
+                    }
+                  }
+                }
+
+                # Bush
+                Transform {
+                  translation 0 1.4 -0.05
+                  children Shape {
+                    geometry Sphere {
+                      radius 0.35
+                    }
+                    appearance Appearance {
+                      texture ImageTexture {
+                        url "bush.gif"
+                      }
+                    }
+                  }
+                }
+
+                # girl1
+                Transform {
+                  translation 0.55 1.4 0
+                  children Shape {
+                    geometry Sphere {
+                      radius 0.35
+                    }
+                    appearance Appearance {
+                      texture ImageTexture {
+                        url "girl1.gif"
+                      }
+                    }
+                  }
+                }
+
+                # girl3
+                Transform {
+                  translation -0.6 1.4 0
+                  children Shape {
+                    geometry Sphere {
+                      radius 0.35
+                    }
+                    appearance Appearance {
+                      texture ImageTexture {
+                        url "girl3.gif"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+	        ]
+	      } #end of Strasse
+
+
+        # Auto
+        DEF AutoUndCockpit Transform {
+          translation 0 0.2 48
+          children [
+	          DEF Auto Transform {         
+
+	            children [          #Karroserie
+    	          Shape {
+        	        geometry Box{size 1 1 2}
+        	        appearance Appearance {
+                    material Material {diffuseColor 0 0 1}
+        	        }
+    	          }
+
+    	          Transform{             #Dach
+        	        translation 0 0.85 0
+        	        children [
+                    Shape {
+                      geometry Box{size 1 .7 1}
+                      appearance Appearance {
+           	            material Material {diffuseColor 0 1 0}
+                      }
+                    }
+        	        ]
+    	          }      
+
+                DEF AutoTouch TouchSensor {
+                }
+              ]
+            }# end of auto
+
+            DEF AutoView Viewpoint {
+              description "Auto"
+              position 0 1 1.8
+            }
+
+            DEF Cockpit Transform {
+              translation 0 0.8 0
+              scale 0 0 0
+              children [
+                Shape {
+                  geometry Box {
+                    size 2.8 1.8 0.01
+                  }
+                  appearance Appearance {
+                    texture ImageTexture {
+                      url "Cockpit.gif"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+
+	      DEF AutoTimer TimeSensor {
+	        cycleInterval 10 #30 # speed up for test
+	        loop FALSE
+	      }
+
+        DEF CockpitAnimator PositionInterpolator {
+          key [0 0.001 1]
+          keyValue [0 0 0, 1 1 1, 1 1 1]
+        }
+
+        DEF AutoMinimierer PositionInterpolator {
+          key [0 1]
+          keyValue [0 0 0, 0 0 0]
+        }
+
+
+	      DEF AutoBeweger PositionInterpolator
+	      {
+	        key      [0.0, 0.5, 1.0]
+	        keyValue [0 0.2 48, 0 0.2 0, 0 0.2 -50]
+	      }
+	      
+      ]
+      
+    }
+
+
+
+    ################################ Insel 2 ###################################
+    DEF insel2 Transform {
+      translation 0 0 -55 # hier die relative Lage zum Mittelpunkt der Welt eingeben
+
+      children [
+    
+        DEF insel2Proxy ProximitySensor {
+          size 80 80 80
+          enabled TRUE
+        }
+
+        
+        DEF terminalView Viewpoint {
+           position 0 1.8 10
+           fieldOfView 0.9
+           description "vor dem Terminal"
+        }
+
+    
+        DEF Boden Transform {
+          translation 0 -25 0
+          rotation 1 0 0 3.14
+          children Shape {
+      
+            geometry Cone {
+        
+              height 50
+              bottomRadius 17
+            }
+            appearance Appearance {
+              material Material {
+                diffuseColor 0.5 0.5 0.5
+                
+              }
+            }
+          }
+        }
+    
+
+        ######################### Ring mit 12 Kerzen ############################# 
+        DEF Kerzenring Transform {
+          translation 0 -2 0
+          scale 5 3 5
+
+
+          PROTO kerze [
+            field SFVec3f translation 0 0 0
+          ]
+
+          {
+
+            Transform {
+              translation IS translation
+              children [
+                PointLight {
+                  radius 30
+                  intensity 0.2
+                  color 1 0.8 0.6
+                  attenuation 1 0.2 0
+                }    
+                Billboard {
+                   children [
+                      Shape {
+                         appearance Appearance {
+                            texture ImageTexture {
+                               url "candle.gif"
+                            }
+                         }
+                         geometry Box {
+                            size 0.04 0.2 0.0001
+                         }
+                      }
+                   ]
+                }
+         
+              ]
+            } 
+          } # end of PROTO kerze
+
+          children [
+            kerze { translation  1     0   0     }
+            kerze { translation  0.866 0   0.5   }
+            kerze { translation  0.5   0   0.866 }
+            kerze { translation  0     0   1     }
+            kerze { translation -0.5   0   0.866 }
+            kerze { translation -0.866 0   0.5   }
+            kerze { translation -1     0   0     }
+            kerze { translation -0.866 0  -0.5   }
+            kerze { translation -0.5   0  -0.866 }
+            kerze { translation  0     0  -1     }
+            kerze { translation  0.5   0  -0.866 }
+            kerze { translation  0.866 0  -0.5   }
+      
+            DEF kerzpos PositionInterpolator {
+              key [0, 1]
+              keyValue [ 0 -2 0,   0 4 0 ]
+            }
+
+            DEF kerzTimer TimeSensor {
+              cycleInterval 3.0
+              loop FALSE   
+            }
+
+            DEF kerzOrientPolator OrientationInterpolator {
+              key [0, 0.25, 0.5, 0.75, 1]
+              keyValue [  0 1 0 0, 
+                          0 1 0 1.57,
+                          0 1 0 3.14,
+                          0 1 0 4.71,
+                          0 1 0 6.28 
+                       ]
+            }
+
+            DEF kerzTimer2 TimeSensor {
+              cycleInterval 12
+              loop TRUE
+            }
+          ]
+
+        }
+        ################### end of Kerzenring ######################## 
+
+    
+
+        #################### terminal ############################
+        DEF Terminal Transform {
+          translation 0 2 0
+
+          PROTO kugelknopf [
+            field SFVec3f translation 0 0 0
+            field MFString url ""
+            field SFRotation rotation 0 0 1 0
+            exposedField SFVec3f scale 1 1 1 
+            eventOut SFTime clickTime
+          ]
+          {
+           
+            Transform {
+              scale IS scale
+              translation IS translation
+              rotation IS rotation
+              children [
+                Shape {
+            
+                  geometry Sphere {
+                    radius 0.7
+                  }
+                  appearance Appearance {
+                    texture ImageTexture {
+                      url IS url
+                    }
+                  }
+                }
+                DEF ts TouchSensor {}
+                DEF out Script {
+                  eventIn SFTime ts_click
+                  eventOut SFTime clickTime IS clickTime
+                        
+                  url "javascript:
+                    function ts_click() {
+                      clickTime = ts_click;
+                    }
+      
+                  "
+                }
+              
+              ]
+              ROUTE ts.touchTime TO out.ts_click
+              
+            }
+          }# end of PROTO kugelknopf
+
+          children [
+            Transform {
+              children Shape {
+                geometry Sphere {
+                  radius 0.95
+                }
+                appearance Appearance {
+                  material Material {
+                    diffuseColor 0 1 0
+                    transparency 0.4
+                  }
+                }
+              }
+              scale 1 0.8 1
+            }
+              
+
+
+            DEF eclipseButton kugelknopf {
+              url "adobeD.gif"
+              translation -0.2 0 0
+              rotation 0 1 0 -1.57
+            }
+            DEF candleLightButton kugelknopf {
+              url "neroD.gif"
+              translation 0.2 0 0
+              rotation 0 1 0 1.57
+            }
+            DEF candleLight2Button kugelknopf {
+              url "wcD.gif"
+              translation 0 0 0.2
+              rotation 0 1 0 0
+            }
+            DEF rotBlauButton kugelknopf {
+              url "rotblauButtonD1.gif"
+              translation 0 0 -0.2
+              rotation 0 1 0 3.14
+            }
+            DEF faceButton kugelknopf {
+              url "face.jpg"
+              translation 0 0 0
+              scale 0 0 0
+            }
+
+            DEF TerminalProxy ProximitySensor {
+              size 20 20 20
+              enabled TRUE
+            }
+
+            DEF KugelKopfScaleTimer1 TimeSensor {
+              loop FALSE
+              cycleInterval 3
+            }
+
+            DEF kugelKnopfScaler1 PositionInterpolator {
+              key [0 1]
+              keyValue [1 1 1, 1.3 1.3 1.3]
+            }
+
+            DEF KugelKopfScaleTimer2 TimeSensor {
+              loop FALSE
+              cycleInterval 3
+            }
+
+            DEF kugelKnopfScaler2 PositionInterpolator {
+              key [0 1]
+              keyValue [1 1 1, 1.3 1.3 1.3]
+            }
+
+            DEF KugelKopfScaleTimer3 TimeSensor {
+              loop FALSE
+              cycleInterval 3
+            }
+
+            DEF kugelKnopfScaler3 PositionInterpolator {
+              key [0 1]
+              keyValue [1 1 1, 1.3 1.3 1.3]
+            }
+
+            DEF KugelKopfScaleTimer4 TimeSensor {
+              loop FALSE
+              cycleInterval 3
+            }
+
+            DEF kugelKnopfScaler4 PositionInterpolator {
+              key [0 1]
+              keyValue [1 1 1, 1.3 1.3 1.3]
+            }
+
+            DEF KugelKopfScaleTimer5 TimeSensor {
+              loop FALSE
+              cycleInterval 5
+            }
+
+            DEF kugelKnopfScaler5 PositionInterpolator {
+              key [0 1]
+              keyValue [0 0 0, 1.6 1.6 1.6]
+            }
+
+            DEF TerminalTimer TimeSensor {
+              loop TRUE
+              cycleInterval 15
+            }
+            DEF TerminalRotator OrientationInterpolator {
+              key [0 0.125 0.25 0.375 0.5 0.635 0.75 0.874 1]
+              keyValue [0 1 0 0
+                        0 1 0 1.57
+                        0 1 0 1.57
+                        0 1 0 3.14
+                        0 1 0 3.14
+                        0 1 0 4.71
+                        0 1 0 4.71
+                        0 1 0 6.24
+                        0 1 0 6.24
+              ]
+            }
+            
+
+          ]
+          
+        }
+     
+        ############################ end of terminal 2 ############################
+
+
+        # initialisierung von insel 2
+        DEF insel2Init Script {
+          
+          eventIn SFTime init
+          eventOut SFFloat unendlich # set visibility range and no fog
+          eventOut SFBool throwFalse # disable insel1-proxy
+          eventOut SFBool throwTrue
+          
+          url "javascript:
+            function init() {
+              unendlich = new SFFloat (10000000);
+              throwFalse = new SFBool(FALSE);
+              throwTrue = new SFBool(TRUE);
+            }
+    
+          "
+        }
+
+
+        
+        #################### klokram ################################
+        DEF kloTimer TimeSensor {
+          cycleInterval 15
+          loop FALSE
+        }
+
+        DEF kloViewPolator PositionInterpolator {
+          # 21 keys
+          key [0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 
+               0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1 ]
+          keyValue [0 1.8 10,
+                    0 1.8 11,
+                    0 1.8 13,
+                    0 1.8 16,
+                    0 1.8 22,
+                    0 1.8 31,
+                    0 1.8 62,
+                    0 1.8 124,
+                    0 1.8 248,
+                    0 1.8 498,
+                    0 100 1000,
+                    0 210 2000,
+                    0 450 4000,
+                    0 1000 8000,
+                    0 2100 16000,
+                    0 4400 30000,
+                    0 9200 60000,
+                    0 20000 100000,
+                    0 44000 200000,
+                    0 92000 400000,
+                    0 200000 800000
+                  ]
+        }
+
+      
+        DEF kloBack Background { 
+          frontUrl "toilet.jpg"
+        }
+
+        Sound {  
+           minBack  0
+           minFront 0
+           maxBack  0
+           maxFront 9999999
+           source DEF kloSound AudioClip {
+             loop FALSE
+             url "toilet.wav"
+           }
+           spatialize FALSE
+        }
+
+        DEF kloView Viewpoint {
+         position 0 1.8 10
+           fieldOfView 0.9
+           
+        }
+
+        DEF kloSoundTimer TimeSensor {
+          loop FALSE
+          #cycleInterval 7
+          stopTime 7
+          enabled FALSE
+        }
+
+        Transform {
+          translation 0 0 0
+          children DEF kloSoundActivator ProximitySensor {
+            enabled TRUE
+            size 1000 1000 1000
+          }
+        }
+        ####################### end of klokram ###############################
+
+      ]
+        
+      ########### ROUTE of insel2 ######################
+      
+    }
+    ######################## end of Insel2 ###############################
+
+
+    ######################## Sonne und Mond ###############################
+    DEF SonneUndMond Transform {
+      translation 0 0 0  
+
+      children [
+
+        DEF Luna Transform {
+          translation 0 300 0
+          children [
+
+            # Mond, leuchtend
+            DEF LunaEclipse Transform {
+              
+              children [
+                Shape {
+                  appearance Appearance {
+                    texture ImageTexture {
+                      url "luna.jpg"
+                      repeatS FALSE
+                      repeatT FALSE
+                    }
+                  }
+                  geometry Sphere {
+                    radius 20
+                  }
+                }
+                PointLight {
+                  color 0.7 0.8 1
+                  intensity 0.2
+                  ambientIntensity 0.2
+                  radius 5000
+                }
+
+
+                DEF MondView Viewpoint {
+                  position 0 5 -21 
+                  orientation 1 0 0 -1.57
+                  fieldOfView 0.5
+                  description "Mond"
+                }
+
+                DEF MondTouch TouchSensor {}
+
+              ]
+            }
+          ]
+        }
+
+        # Sonne, leuchtend
+        DEF Sonne Transform {
+          translation 0 -300 0
+          children [
+            Shape {
+              appearance Appearance {
+                texture ImageTexture {
+                  url "sun.jpg"
+                  repeatS FALSE
+                  repeatT FALSE
+                }
+              }
+              geometry Sphere {
+                radius 20
+              }
+            }
+            
+            PointLight {
+              color 1.0 0.8 0.8
+              intensity 1.0
+              ambientIntensity 1.0
+              radius 5000
+            }
+
+            DEF SonneView Viewpoint {
+              position 0 -5 21 
+              orientation 1 0 0 1.57
+              fieldOfView 0.5
+              description "Sonne"
+            }
+
+            DEF SonneTouch TouchSensor {}
+
+            
+          ]
+        }
+
+        DEF PlanetTimer TimeSensor {
+          cycleInterval 100
+          loop TRUE
+        }
+
+
+        DEF PlanetPolator OrientationInterpolator {
+          key [0, 0.25, 0.5, 0.75, 1]
+          keyValue [  1 0 0 0, 
+                      1 0 0 1.57,
+                      1 0 0 3.14,
+                      1 0 0 4.71,
+                      1 0 0 6.28 
+                   ]
+        }
+
+        DEF EclipseView Viewpoint {
+          position 0 -70 0 
+          orientation 1 0 0 -1.57
+        }
+
+        DEF EclipseTimer TimeSensor {
+          loop FALSE
+          cycleInterval 30
+        }
+
+        DEF EclipsePGDNpolator PositionInterpolator {
+          key [0 0.7 0.75 0.95 1]
+          keyValue [0 0 0, 0 0 0, 1.5 1.5 1.5, 1.5 1.5 1.5, 0 0 0]
+        }
+
+        DEF EclipseInterpolator PositionInterpolator {
+          key [0 0.5 0.999 1]
+          keyValue [-55 -580 0
+                    0 -580 0
+                    90 -580 0
+                    0 0 0
+          ]
+        }
+
+        DEF EclipsePGDN pgdn {
+          translation 10 -90 7
+          rotation 1 0 0 -1.57
+        }
+
+      ]
+
+      ROUTE PlanetTimer.fraction_changed TO PlanetPolator.set_fraction
+      ROUTE PlanetPolator.value_changed TO SonneUndMond.rotation
+
+    }
+    ########################## Ende von Sonne und Mond ###############################
+
+
+    ######################## rotBlauWürfel innen ##########################
+    DEF inCube Transform {
+      translation 0 0 0    # relativ zum Mittelpunkt der Welt
+      scale 0 0 0 # zu Anfang ganz klein
+
+      PROTO rotblau [
+        exposedField SFRotation rotation 0 0 0 0
+        field SFVec3f translation 0 0 0 
+      ]
+      { 
+        Transform {
+          rotation IS rotation
+          translation IS translation
+
+          children Shape {
+            geometry Box {
+              size 1000 1000 1
+            }
+            appearance Appearance {
+              texture ImageTexture {
+                url "rotblau.gif"
+              }
+            }
+          }
+        }
+      } # end of PROTO rotblau
+
+      children [
+
+        # vorne
+        rotblau {
+          translation 0 0 500
+          rotation 0 0 0 0
+        }
+
+        # rechts
+        rotblau {
+          translation 500 0 0
+          rotation 0 1 0 1.57
+        }
+
+        # links
+        rotblau {
+          translation -500 0 0
+          rotation 0 1 0 1.57
+        }
+
+        # hinten
+        rotblau {
+          translation 0 0 -500
+          rotation 0 0 0 0
+        }
+
+        # oben
+        rotblau {
+          translation 0 500 0
+          rotation 1 0 0 1.57
+        }
+
+        # unten
+        rotblau {
+          translation 0 -500 0
+          rotation 1 0 0 1.57
+        }
+
+        #teletubbies
+        Transform {
+          translation 1000 0 1000
+          children [
+            Billboard {
+              children [
+                Shape {
+                  geometry Box {
+                    size 1200 1220 0.1
+                  }
+                  appearance Appearance {
+                    texture ImageTexture {
+                      url "teletubbies.gif"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+
+        DEF cubeTimer TimeSensor {
+          loop FALSE
+          cycleInterval 0.1
+          stopTime 0
+        }
+
+        DEF cubeScale PositionInterpolator {
+          key [ 0 1]
+          keyValue [0 0 0, 1 1 1]
+        }
+      ]
+      
+    }
+    #################### ende von rotBlauWürfel innen ##############
+
+    
+
+
+
+    ##################### Polatoren, Sensoren ##########################
+    # Hier alle Action, die die ganze Welt betrifft
+
+    DEF Polatoren_Sensoren_Scripten Group {
+      children [
+
+        # fog fade
+        DEF	FogFade ScalarInterpolator {
+				  key			[0 , 0.9, 1]
+				  keyValue	[10, 50, 1000000]
+			  }
+
+
+      ]
+    }
+    ####################### end of Polatoren und Sensoren ###############################
+
+
+  ]
+
+  
+
+
+  ########################## ROUTE ##################################
+
+  # insel 1 standard routing
+  ROUTE insel1Proxy.isActive TO insel1Light.on
+  ROUTE insel1Proxy.isActive TO startView.set_bind
+  ROUTE insel1Proxy.isActive TO hausView.set_bind
+  
+
+
+  # Schornstein raucht
+  ROUTE	RauchTime.fraction_changed	TO RauchPos.set_fraction
+  ROUTE	RauchTime.fraction_changed TO RauchBox.set_fraction
+  ROUTE	RauchPos.value_changed TO Rauch.translation
+  ROUTE	RauchBox.value_changed TO Rauch.scale
+
+
+  # kleiner baum wird geklickt
+  ROUTE	BaumTimer.fraction_changed  TO FogFade.set_fraction
+  ROUTE	FogFade.value_changed  TO Foggy.visibilityRange
+  ROUTE	FogFade.value_changed  TO navigation.visibilityLimit
+
+  # Autofahrt
+  ROUTE AutoTouch.touchTime TO AutoTimer.startTime
+  ROUTE AutoTimer.fraction_changed TO AutoBeweger.set_fraction
+  ROUTE AutoBeweger.value_changed TO AutoUndCockpit.translation
+  ROUTE AutoTimer.isActive TO AutoView.set_bind
+  ROUTE AutoTimer.fraction_changed TO AutoMinimierer.set_fraction
+  ROUTE AutoMinimierer.value_changed TO Auto.scale
+  ROUTE AutoTimer.fraction_changed TO CockpitAnimator.set_fraction
+  ROUTE CockpitAnimator.value_changed TO Cockpit.scale
+
+  # bei näherung an Insel2: initScript ausführen
+  ROUTE insel2Proxy.enterTime TO insel2Init.init
+  ROUTE insel2Init.unendlich TO navigation.visibilityLimit
+  ROUTE insel2Init.unendlich TO Foggy.visibilityRange # freie sicht für Klospülung
+  ROUTE insel2Init.throwFalse TO insel1Proxy.enabled # freie sicht für Klospülung
+  #ROUTE insel2Proxy.isActive TO AutoView.set_bind
+
+  # rotblauwürfel nimmt riesengröße ein
+  ROUTE cubeScale.value_changed TO inCube.scale
+  ROUTE cubeTimer.fraction_changed TO cubeScale.set_fraction
+
+  # Insel 1 stellt sich auf den Kopf
+  ROUTE	BaumTouch.touchTime TO BaumTimer.startTime
+  ROUTE	BaumTimer.cycleTime	TO BaumFadeTimer.startTime
+  ROUTE	BaumTimer.isActive TO BaumFadeTimer.enabled
+  ROUTE	BaumFadeTimer.fraction_changed TO BaumFader.set_fraction
+  ROUTE	BaumFader.value_changed	TO BaumFont.transparency
+  ROUTE	BaumTimer.fraction_changed TO BaumFallen.set_fraction
+  ROUTE	BaumFallen.value_changed TO	Baum.rotation
+  ROUTE	BaumFallen.value_changed TO	FallBaum.rotation
+
+  # Animation von Rückwärtsflug
+  ROUTE kloTimer.fraction_changed TO kloViewPolator.set_fraction
+  ROUTE kloViewPolator.value_changed TO kloView.position
+  ROUTE kloTimer.isActive TO kloView.set_bind
+  ROUTE kloTimer.isActive TO kloBack.set_bind
+  ROUTE kloSoundActivator.exitTime TO kloSound.startTime
+
+  # Kerzen heben sich aus dem Boden
+  ROUTE kerzTimer.fraction_changed TO kerzpos.set_fraction
+  ROUTE kerzpos.value_changed TO Kerzenring.translation
+
+  # Kerzen drehen sich im Kreis
+  ROUTE kerzTimer2.fraction_changed TO kerzOrientPolator.set_fraction
+  ROUTE kerzOrientPolator.value_changed TO Kerzenring.rotation
+
+  # Sonnen und Mondsicht auf klick
+  ROUTE SonneTouch.isActive TO SonneView.set_bind
+  ROUTE MondTouch.isActive TO MondView.set_bind 
+
+  # Sonnenfinsternis
+  ROUTE EclipseTimer.fraction_changed TO EclipseInterpolator.set_fraction
+  ROUTE EclipseInterpolator.value_changed TO LunaEclipse.translation
+  ROUTE EclipseTimer.isActive TO EclipseView.set_bind
+  ROUTE EclipseTimer.fraction_changed TO EclipsePGDNpolator.set_fraction
+  ROUTE EclipsePGDNpolator.value_changed TO EclipsePGDN.scale
+
+  # Terminal 2 dreht sich
+  ROUTE TerminalTimer.fraction_changed TO TerminalRotator.set_fraction
+  ROUTE TerminalRotator.value_changed TO Terminal.rotation
+
+  # Terminal enable, button by button
+  ROUTE TerminalProxy.enterTime TO KugelKopfScaleTimer1.startTime
+  ROUTE KugelKopfScaleTimer1.fraction_changed TO kugelKnopfScaler1.set_fraction
+  ROUTE kugelKnopfScaler1.value_changed TO candleLightButton.scale
+
+  ROUTE KugelKopfScaleTimer2.fraction_changed TO kugelKnopfScaler2.set_fraction
+  ROUTE kugelKnopfScaler2.value_changed TO candleLight2Button.scale
+
+  ROUTE KugelKopfScaleTimer3.fraction_changed TO kugelKnopfScaler3.set_fraction
+  ROUTE kugelKnopfScaler3.value_changed TO eclipseButton.scale
+
+  ROUTE KugelKopfScaleTimer4.fraction_changed TO kugelKnopfScaler4.set_fraction
+  ROUTE kugelKnopfScaler4.value_changed TO rotBlauButton.scale
+
+  ROUTE KugelKopfScaleTimer5.fraction_changed TO kugelKnopfScaler5.set_fraction
+  ROUTE kugelKnopfScaler5.value_changed TO faceButton.scale
+
+
+  # Terminal knopf action
+  ROUTE candleLightButton.clickTime TO kerzTimer.startTime
+  ROUTE candleLightButton.clickTime TO KugelKopfScaleTimer2.startTime
+
+  ROUTE candleLight2Button.clickTime TO kerzTimer2.startTime
+  ROUTE candleLight2Button.clickTime TO KugelKopfScaleTimer3.startTime
+
+  ROUTE eclipseButton.clickTime TO KugelKopfScaleTimer4.startTime
+  ROUTE eclipseButton.clickTime TO EclipseTimer.startTime
+
+  ROUTE rotBlauButton.clickTime TO cubeTimer.startTime
+  ROUTE rotBlauButton.clickTime TO KugelKopfScaleTimer5.startTime
+                                               
+  ROUTE faceButton.clickTime TO kloTimer.startTime
+
+
+
+  # Vogel Routen
+
+	ROUTE VogelTouch.touchTime TO Timer.startTime
+	ROUTE Timer.fraction_changed TO Beweger.set_fraction
+	ROUTE Beweger.value_changed TO Lfl.rotation
+
+	ROUTE VogelTouch.touchTime TO  Timer2.startTime
+	ROUTE Timer2.fraction_changed TO Beweger2.set_fraction
+	ROUTE Beweger2.value_changed TO	Rfl.rotation
+	ROUTE Timer3.isActive TO VogelFadeTimer.enabled
+	ROUTE Timer3.cycleTime TO VogelFadeTimer.startTime
+	ROUTE VogelFadeTimer.fraction_changed TO VogelFader.set_fraction
+	ROUTE VogelFader.value_changed TO VogelFont.transparency
+
+
+	ROUTE VogelTouch.touchTime TO Timer3.startTime
+	ROUTE Timer3.fraction_changed TO Beweger3.set_fraction
+	ROUTE Beweger3.value_changed TO	Vogel.translation
+
+	ROUTE VogelTouch.touchTime TO  Timer4.startTime
+	ROUTE Timer4.fraction_changed TO Beweger4.set_fraction
+	ROUTE Beweger4.value_changed TO	Vogel.rotation
+
+	ROUTE Timer4.isActive TO Timer2.loop
+	ROUTE Timer4.isActive TO Timer.loop
+
+    ROUTE VogelTouch.touchTime TO	VogelSound.startTime
+
+}
+######################### end of RealWorld ###################################
+
+
+        
