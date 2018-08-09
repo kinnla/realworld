@@ -1,5 +1,4 @@
-var AFRAME;
-var THREE;
+/* global AFRAME, THREE */
 
 AFRAME.registerComponent('camera-logger', {
       

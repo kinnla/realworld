@@ -1,4 +1,4 @@
-var AFRAME;
+/* global AFRAME */
 
 AFRAME.registerComponent('tree', {
   schema: {

@@ -1,4 +1,4 @@
-var AFRAME;
+/* global AFRAME, THREE */
 
 // global variables
 var sceneEl;
@@ -14,7 +14,7 @@ AFRAME.registerComponent ( 'viewpoint', {
   schema: {
     enabled: { type: 'boolean', default: false },
     neighbours: { type: 'array' },
-    offset: { type: 'vec3', default: '0 -1.6 0' },
+    offset: { type: 'vec3', default: new THREE.Vector3(0, -1.6, 0) },
     onclick: { type: 'string' },
     keyCode: { type: 'int' } // if a key code is set, the user can change the camera position to this viewpoint on key-press
   },
